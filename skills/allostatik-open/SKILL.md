@@ -37,9 +37,12 @@ that protect the routine from shortcuts.
    they point at (`project-instructions.md`, `plan.md`, and the rest of the
    canonical set).
 2. Execute Session open steps 1–6 exactly as the project's copy states them:
-   verify capability → read context → drift-check → restate the state in your
-   own words → share the numbered session plan and wait for approval → mark
-   the session open in the ledger.
+   verify capability → read context (including the ledger's tail) → drift-check
+   → restate the state in your own words → share the numbered session plan and
+   wait for approval → mark the session open in the ledger.
+   A `STEP` line in the ledger with no matching `STEP-DONE` means a long routine
+   — a first run or a migration — died mid-flight. Surface it before the plan;
+   resuming it at the next unrecorded step *is* the plan.
 3. If the handoff carries a "DO BEFORE THIS HANDOFF IS CONSUMED" item, it goes
    first — before the session plan.
 

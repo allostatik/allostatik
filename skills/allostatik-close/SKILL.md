@@ -15,11 +15,15 @@ happens, in the right order, without shortcuts.
 
 1. **The project's `workflow.md` is authoritative, not this skill.** Its Part 2
    may add close steps or skip rows; they apply.
-2. **Order is load-bearing; the handoff is LAST.** Reflective pass → update
-   canonical files → re-paste deployed surfaces → confirm it landed → commit
-   and push (if version control) → project-specific additions → handoff →
-   name the session. A handoff written before saves are confirmed describes
-   assumed state, not real state.
+2. **Order is load-bearing; the handoff is LAST.** Verify this session opened in
+   the ledger → reflective pass → update canonical files → re-paste deployed
+   surfaces → confirm it landed → mark the session closed in the ledger →
+   commit and push (if version control) → project-specific additions → handoff
+   → name the session. A handoff written before saves are confirmed describes
+   assumed state, not real state. **The two ledger steps are steps of the close,
+   not bookkeeping around it** — the first is how a skipped open gets caught, and
+   omitting either leaves the next session's open unable to tell a clean finish
+   from an abandoned one.
 3. **"Confirm it landed" means evidence, not intention.** Use the strongest
    check the setup allows — `git status` showing exactly the edited files, a
    re-read of what's on disk, or the user confirming manual saves. An edit you

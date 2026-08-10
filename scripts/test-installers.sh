@@ -162,6 +162,26 @@ else
   bad "version drift: npm=$V_NPM pip=$V_PIP init=$V_INIT"
 fi
 
+# --- Case 9: ledger reachability — every routine a session can run FIRST must create
+# the ledger. Without this, close step 0 (verify this session opened) fails by
+# construction on every project's first session, and long routines have nothing to
+# checkpoint into. This case exists because both first-run routines shipped without it.
+say "case 9: ledger reachability"
+WF="$ROOT/templates/project-boilerplate/allostatik/workflow.md"
+wf_section() { awk -v h="$1" '$0==h{f=1;next} /^## /{f=0} f' "$WF"; }
+for h in "## First run — set up the files" "## First run — existing project (migrate)"; do
+  body="$(wf_section "$h")"; label="$(printf '%s' "$h" | sed 's/^## //')"
+  printf '%s' "$body" | grep -q 'session-ledger.md' \
+    && ok "$label: creates the ledger" \
+    || bad "$label: never creates the ledger (close step 0 fails by construction on session 1)"
+  printf '%s' "$body" | grep -q 'STEP-DONE' \
+    && ok "$label: marks the routine finished" \
+    || bad "$label: no STEP-DONE (a finished run reads as abandoned)"
+done
+grep -q 'ledger' "$ROOT/skills/allostatik-close/SKILL.md" \
+  && ok "close skill names the ledger steps" \
+  || bad "close skill omits the ledger steps (stale enumeration)"
+
 say ""
 say "passed: $PASS  failed: $FAIL"
 [ "$FAIL" -eq 0 ]

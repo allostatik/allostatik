@@ -251,19 +251,23 @@ def main(argv: "list[str] | None" = None) -> None:
         f"  {template_note}",
         "",
         "Next steps (the files take it from here):",
-        "  1. Point your project at the files — paste this block into your",
-        "     project's instructions (the Project Instructions field in Claude",
-        "     Desktop, or your surface's equivalent). Claude Code or Cursor? Skip",
-        "     this — the placed CLAUDE.md / AGENTS.md does it.",
+        "  1. Point your project at the files. Claude Code or Cursor? Skip this",
+        "     step — the placed CLAUDE.md / AGENTS.md does it. Claude Desktop?",
+        "     This step is yours: create a project for this work (if one doesn't",
+        "     exist yet), then paste this block into its Project Instructions",
+        "     field. Other surfaces: the project-level instructions slot.",
         "",
         "     ----- copy from here -----",
         *pointer_block,
         "     ----- copy to here -----",
         "",
+        "  2. Using git? Commit the fresh install as its own commit before you",
+        "     fill anything in (git init first if the folder isn't a repo yet) —",
+        "     every later diff is then provably yours.",
     ]
     if mode == "existing":
         lines += [
-            "  2. This looks like an EXISTING project. In your first session, Claude should",
+            "  3. This looks like an EXISTING project. In your first session, Claude should",
             "     follow workflow.md's 'First run — existing project (migrate)' routine:",
             "     it walks YOU through each file, drawing on your current docs — it must",
             "     not silently bulk-fill them. If it starts writing files without you,",
@@ -271,10 +275,10 @@ def main(argv: "list[str] | None" = None) -> None:
         ]
     else:
         lines += [
-            "  2. Fresh project: your first session runs workflow.md's first-run setup —",
+            "  3. Fresh project: your first session runs workflow.md's first-run setup —",
             "     Claude proposes, you keep/change/drop, file by file.",
         ]
-    lines += ["  3. Confirm it took: new conversation, ask 'where do things stand?'"]
+    lines += ["  4. Confirm it took: new conversation in the project, ask 'where do things stand?'"]
     print("\n".join(lines))
 
 

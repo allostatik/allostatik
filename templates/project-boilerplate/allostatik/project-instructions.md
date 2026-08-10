@@ -3,7 +3,7 @@
 Canonical template source: allostatik/templates/project-boilerplate/allostatik/project-instructions.md
 Project-scope location: [YOUR-PROJECT-ROOT]/allostatik/project-instructions.md
 Paste destination: [YOUR-DEPLOYMENT-TARGET]
-Edit at the project-scope location above; sync to the paste destination per your storage mode. Drift-checked at session start and end.
+Edit at the project-scope location above; sync to the paste destination per your storage mode. Drift-checked at session start and end. Path style: in any text that gets pasted into a prompt, write paths `~/`-relative or backtick-wrapped — a line-leading absolute path reads as a slash command.
 
 ---
 

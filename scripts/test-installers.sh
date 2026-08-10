@@ -182,6 +182,21 @@ grep -q 'ledger' "$ROOT/skills/allostatik-close/SKILL.md" \
   && ok "close skill names the ledger steps" \
   || bad "close skill omits the ledger steps (stale enumeration)"
 
+# --- Case 10: placeholder-scan hygiene — convention mentions are backticked
+# (named, not instantiated), so the drift-check's placeholder scan flags exactly
+# the real slots: zero false positives on a clean install (obs #279c). Backticked
+# spans are stripped BEFORE matching, so the exemption is per-token, not per-line
+# (two markers share one decisions.md line). Mutation check: un-backtick any
+# single marker and the first check fails.
+say "case 10: placeholder-scan hygiene"
+BP="$ROOT/templates/project-boilerplate"
+viol="$( { find "$BP" -type f -name '*.md' -exec sed 's/`[^`]*`//g' {} + | grep -c -e '\[ALL-CAPS-WITH-HYPHENS\]' -e '\[SUPERSEDED ' -e '\[AMENDED ' -e '\[PARTIALLY SUPERSEDED ' ; } || true )"
+viol="${viol:-0}"
+[ "$viol" -eq 0 ] && ok "convention mentions are backticked (scan-exempt)" || bad "$viol bare convention mention(s) — the scan false-positives on a clean install"
+grep -q 'wrapped in backticks' "$BP/allostatik/workflow.md" \
+  && ok "scan definition documents the backtick exemption" \
+  || bad "scan definition missing the backtick exemption"
+
 say ""
 say "passed: $PASS  failed: $FAIL"
 [ "$FAIL" -eq 0 ]

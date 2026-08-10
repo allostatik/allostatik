@@ -18,7 +18,7 @@
 
 <!-- Add your own project overview, instructions, or notes here. -->
 
-<!-- BEGIN allostatik (managed — update by replacing this block as a unit; your edits belong outside it) -->
+<!-- BEGIN allostatik (managed — update by replacing this block as a unit; your edits belong outside it. Project additions — an extra canonical file to load, say — go below the END marker, outside the fence) -->
 
 This region is contributed by Allostatik. It declares this as an Allostatik project and lists the project-scope files your AI loads each session. Architectural background for this pattern lives in the methodology's `README.md` — not duplicated here.
 

@@ -4,7 +4,7 @@ Directional state — where this project is going at the longer horizon, and why
 
 This is distinct from its `allostatik/` siblings — `plan.md` holds operational state (what's in flight, in what order); this file holds direction (where it's all headed). Operational specifics belong there; the long arc belongs here.
 
-Optional, and deliberately incomplete. Develop it once the project has direction beyond its immediate plan; leave it thin while the work is still finding its shape. Name open questions rather than hiding them — an honest "still unresolved" is more useful than a forced answer.
+Optional, and deliberately incomplete — empty is correct at session 1. Develop it once the project has direction beyond its immediate plan; leave it thin while the work is still finding its shape. Name open questions rather than hiding them — an honest "still unresolved" is more useful than a forced answer.
 
 **Last meaningful update:** [YYYY-MM-DD]
 

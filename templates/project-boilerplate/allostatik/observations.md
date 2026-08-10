@@ -2,6 +2,8 @@
 
 Patterns noticed about how you and Claude work together on this project — frictions, recurring habits, things worth not losing. Numbered cumulatively across sessions; the numbers are stable references, so don't renumber when an observation moves.
 
+Empty is correct at session 1 — a new project has no recurring patterns yet. The sections below fill only as patterns actually fire across sessions; a blank file here is a working state, not a gap.
+
 This file has two sections. **Candidates** are patterns still being validated. **Promoted** are the ones durable enough to count as baseline expectations — a candidate promotes after it fires roughly three times across separate sessions (adjust the threshold in `workflow.md` if that doesn't fit your tempo).
 
 A separate path runs to `decisions.md`: when an observation hardens into a commitment that constrains future work, it becomes a locked decision there, with the originating number noted for lineage (e.g. "promoted from observations #12"). The two paths are independent — an observation can promote within this file, get locked as a decision, both, or neither. The distinction is descriptive (a pattern noticed) vs. constraining (a commitment made).

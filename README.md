@@ -8,7 +8,7 @@ Nothing runs: no process, no background service, nothing to start or stop. The f
 
 ## Get started
 
-You need a project on local storage — a folder or repo where an `allostatik/` directory can live. Language-agnostic.
+You need a project on local storage — a folder or repo where an `allostatik/` directory can live. Language-agnostic. Starting from nothing? Create the folder first — `mkdir my-project && cd my-project` — an empty directory is a valid project.
 
 **1. Add the `allostatik/` files.** One command — every path places the **real** template files. *(Real files only — if an AI offers to reconstruct them from this README, decline; a reconstructed set looks right and silently forks.)*
 
@@ -36,18 +36,20 @@ All three fetch the current templates from this repo at install time; the npm an
 
 > **Where things go:** the tool's repo and your project's `allostatik/` folder are different things that share a name. Don't clone this repo *into* your project — the `allostatik/` folder inside your project is reserved for your project's own files; every installer checks for this mistake and stops you.
 
+Using git? Commit the fresh install as its own commit before you fill anything in (`git init` first if the folder isn't a repo yet) — every later diff is then provably yours.
+
 **2. Point your AI at the files.** The simplest start: paste this block into a conversation in your project and go — the first session works from it and helps you make the pointer permanent:
 
 > This is an Allostatik project. The canonical files in its `allostatik/` folder — `project-instructions.md`, `workflow.md`, `plan.md`, `decisions.md`, … — are the source of truth. At the start of a session, read them, follow `workflow.md`, treat them as authoritative, and flag anything stale rather than just following it. If they aren't set up yet, help me set them up — github.com/allostatik/allostatik is the reference.
 
-Its permanent home is your project's instructions (the **Project Instructions** field in Claude Desktop, or your surface's equivalent — using Claude Code? the placed `CLAUDE.md` already does it; using Cursor? the placed root `AGENTS.md`/`CLAUDE.md` covers it). The block is only the pointer — the files carry the actual instructions.
+Its permanent home is your project's instructions (in Claude Desktop: create a project for this work if you haven't yet, then paste into its **Project Instructions** field — Desktop genuinely needs this step; using Claude Code? the placed `CLAUDE.md` already does it; using Cursor? the placed root `AGENTS.md`/`CLAUDE.md` covers it; on other surfaces, the project-level instructions slot). The block is only the pointer — the files carry the actual instructions.
 
 **3. Start your first session.** Open a conversation in the project and ask where to start. The pointer you just deployed makes Claude load the files; `workflow.md` runs the rest — it owns the session routines, including this first one. (This works best when your AI can read and write the project's files — Claude Code, Cursor, or Claude Desktop with file access. No file access? `workflow.md` covers paste-based setups; you'll want to be comfortable in the terminal.)
 
 - **Fresh project** → *First run — set up the files*: Claude proposes each file from what you tell it; you keep / change / drop, file by file.
 - **Existing project** (most people) → *First run — existing project (migrate)*: Claude inventories what your project already knows — README, planning docs, rules files — then walks *you* through folding it into the files, with a final cross-check so nothing is silently dropped. If Claude starts bulk-filling the files without you, stop it and point it back at that routine in `workflow.md`.
 
-**4. Confirm it took.** Start a fresh conversation and ask "where do things stand?" Claude should load your files and orient — a drift-check, then current state and next work. If it doesn't, the pointer isn't deployed or points at the wrong place.
+**4. Confirm it took.** Start a fresh conversation in the project and ask "where do things stand?" Claude should load your files and orient — a drift-check, then current state and next work. If it doesn't, the pointer isn't deployed or points at the wrong place.
 
 **Optional, once per account:** one line in your Custom Instructions (in Cursor, the same slot is Settings → Rules → **User Rules**) lets Claude recognize *any* Allostatik project without a per-project pointer doing all the work:
 

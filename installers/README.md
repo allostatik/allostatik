@@ -11,7 +11,7 @@ Canonical **source** for the two published installers. Both are ports of `init.s
 
 **Releasing:**
 
-1. `npm whoami` — the auth gate. Sign-in expires between releases, and an unauthenticated `npm publish` reports **404 Not Found**, not "please sign in" (E401 masking as E404). On E401: `npm login`, bare — never piped; it's a browser/passkey flow.
+1. **Sign in first — assume the session expired.** It has been, at every release so far. `npm whoami` is the check: on E401, run `npm login` (bare — never piped; it's a browser/passkey flow) and re-run the check. Skipped, an unauthenticated `npm publish` fails as **404 Not Found**, not "please sign in" (E401 masking as E404).
 2. Bump `version` in `npm/package.json` and `pip/pyproject.toml` + `pip/src/allostatik/__init__.py` (keep them in lockstep).
 3. `scripts/bundle-templates.sh` (refreshes the bundled fallback from `templates/`)
 4. `cd installers/npm && npm publish`

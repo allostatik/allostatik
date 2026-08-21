@@ -44,8 +44,9 @@ happens, in the right order, without shortcuts.
 1. Read `allostatik/workflow.md` **Session close**, **Writing the handoff**, and
    Part 2's *Closing-protocol additions* / *Handoff conventions*.
 2. Execute the close steps in the project's stated order, gating each write.
-3. Finish by suggesting a short descriptive session name and confirming the
-   wrap.
+3. Finish by suggesting a session name in close step 8's format — `s<N> <project>
+   <description>`, description ~50 characters, leading with what distinguishes this
+   session from its neighbours — and confirming the wrap.
 
 ## What good looks like
 

@@ -1,6 +1,6 @@
 # Changelog
 
-What changed in each release, written for the person deciding whether it's worth twenty minutes. Every entry has the same parts: what's new, why it's worth it, how long it takes, and the prompt to paste to your AI. The routine your AI follows — and the fine print on what an upgrade can and can't touch — is `UPGRADING.md`.
+What changed in each release, written for the person deciding whether it's worth twenty minutes. Every entry has the same parts: what's new, why it's worth it, how long it takes, and how to upgrade — either the prompt to paste to your AI, or a pointer to the entry that carries it. The routine your AI follows — and the fine print on what an upgrade can and can't touch — is `UPGRADING.md`.
 
 ## 0.3.4 — 2026-08-21 — Upgrades
 
@@ -18,7 +18,7 @@ What changed in each release, written for the person deciding whether it's worth
 
 **Takes about 30 minutes** with your AI assisting. Every install that exists today predates this release, so the first time is the bootstrap walk; later releases take about 20.
 
-**To upgrade:** commit your project, then paste the bootstrap prompt in the next entry to your AI.
+**To upgrade:** commit your project, then paste the bootstrap prompt from the next entry — *Before 0.3.4* — to your AI. Every install that exists today is a pre-0.3.4 install, so that is the prompt you want.
 
 ## Before 0.3.4 — every earlier install (0.1.0 through 0.3.3) — the bootstrap
 

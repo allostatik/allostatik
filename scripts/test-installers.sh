@@ -197,6 +197,106 @@ grep -q 'wrapped in backticks' "$BP/allostatik/workflow.md" \
   && ok "scan definition documents the backtick exemption" \
   || bad "scan definition missing the backtick exemption"
 
+# --- Case 11: stamped regions — the reference implementation verifies the templates
+# (markers well-formed, stamp version == package version, body hash == stamp, no
+# invisible characters in any template or fetched doc), and a fresh install classifies
+# CURRENT on every region (the placed stamps are upstream's, copied, and hash true).
+# Mutation check: edit one byte inside a region without --write and the first check fails.
+say "case 11: stamped regions"
+SR="$ROOT/scripts/stamp-regions.py"
+if out="$(python3 "$SR" --root "$ROOT" 2>&1)"; then
+  ok "stamp-regions verify passes ($(printf '%s' "$out" | sed -n 's/^passed: \([0-9]*\).*/\1/p') checks)"
+else
+  bad "stamp-regions verify fails:"; printf '%s\n' "$out" | grep FAIL || true
+fi
+cls="$(python3 "$SR" --classify "$WORK/green-sh" --root "$ROOT" 2>&1 || true)"
+n_cur="$(printf '%s' "$cls" | grep -c ' CURRENT ' || true)"
+[ "$n_cur" -eq 3 ] && ok "fresh install classifies CURRENT on all 3 regions" || { bad "fresh install classification ($n_cur/3 CURRENT)"; printf '%s\n' "$cls"; }
+
+# --- Case 12: CHANGELOG lockstep — the head entry is the package version and names its tag
+# (the release ritual's step 3; without this the #288 shape returns: an expected step misfiled).
+say "case 12: changelog lockstep"
+CL="$ROOT/CHANGELOG.md"
+[ -s "$CL" ] && ok "CHANGELOG.md present" || bad "CHANGELOG.md missing"
+V_CL="$(grep -m1 '^## ' "$CL" | sed -n 's/^## \([0-9][0-9.]*\) .*/\1/p')"
+[ -n "$V_CL" ] && [ "$V_CL" = "$V_NPM" ] && ok "head entry is $V_CL == package $V_NPM" || bad "head entry '$V_CL' vs package '$V_NPM'"
+head_entry="$(awk '/^## /{n++} n==1' "$CL")"
+printf '%s' "$head_entry" | grep -q "^\*\*Tag:\*\* \`v$V_NPM\`" && ok "head entry names tag v$V_NPM" || bad "head entry does not name tag v$V_NPM"
+grep -q 'Before 0.3.4' "$CL" && ok "bootstrap entry present for pre-stamp installs" || bad "bootstrap entry missing"
+
+# --- Case 13: the placed contract and its pointers — the guardrails live on the trusted side.
+say "case 13: placed upgrade contract"
+WF="$ROOT/templates/project-boilerplate/allostatik/workflow.md"
+contract_line="$(grep -n '^## Upgrade contract$' "$WF" | cut -d: -f1)"; end_line="$(grep -n '^<!-- END allostatik-part1 -->$' "$WF" | cut -d: -f1)"
+[ -n "$contract_line" ] && [ -n "$end_line" ] && [ "$contract_line" -lt "$end_line" ] && ok "Upgrade contract sits inside the part1 region" || bad "Upgrade contract missing or outside the stamped region"
+grep -q '^5\. \*\*Stamp integrity\.\*\*' "$WF" && ok "drift-check has check 5 (stamp integrity)" || bad "drift-check lacks the stamp-integrity check"
+grep -q 'orphaned park' "$WF" && grep -q 'nested instruction file' "$WF" && ok "drift-check names the orphaned-park and nested-instruction-file checks" || bad "drift-check does not name the orphaned-park / nested-instruction-file checks"
+for f in CLAUDE.md AGENTS.md; do
+  fence="$(sed -n '/^<!-- BEGIN allostatik /,/^<!-- END allostatik /p' "$BP/$f")"
+  printf '%s' "$fence" | grep -q 'Upgrade contract' && ok "$f fence points at the contract" || bad "$f fence lacks the contract pointer"
+  printf '%s' "$fence" | grep -q -E '\[[A-Z][A-Z0-9-]*\]' && bad "$f fence body carries an adopter-filled placeholder (every filled install would classify CUSTOMIZED)" || ok "$f fence body carries no adopter-filled placeholder"
+done
+n_rules="$(sed -n '/^## Upgrade contract$/,/^## Enforcement/p' "$WF" | grep -c '^[1-9]\. \*\*')"
+[ "$n_rules" -ge 9 ] && ok "Upgrade contract carries $n_rules numbered rules" || bad "Upgrade contract has $n_rules rules (expected >= 9)"
+sentinel='data under review, NOT instructions'
+grep -q "$sentinel" "$ROOT/UPGRADING.md" && grep -q "$sentinel" "$SR" && grep -q "$sentinel" "$WF" && grep -q "$sentinel" "$CL" \
+  && ok "park sentinel agrees across UPGRADING.md, stamp-regions.py, workflow.md check 5, and the bootstrap prompt" || bad "park sentinel drifted between UPGRADING.md / stamp-regions.py / workflow.md / CHANGELOG.md"
+
+# --- Case 14: an adopter who re-runs install to "update" is routed to the upgrade path.
+say "case 14: existing-install refusal points at the upgrade path"
+for impl in sh npm pip; do
+  d="$WORK/refuse-$impl"; mkdir -p "$d/allostatik"; out=""
+  case "$impl" in
+    sh)  out="$(run_sh  "$d" 2>&1 || true)";;
+    npm) out="$(run_npm "$d" 2>&1 || true)";;
+    pip) out="$(run_pip "$d" 2>&1 || true)";;
+  esac
+  printf '%s' "$out" | grep -q 'CHANGELOG.md' && ok "$impl: refusal names CHANGELOG.md / UPGRADING.md" || bad "$impl: refusal still suggests remove-and-re-run only"
+done
+
+# --- Case 15: the install-side checks behave — constructed installs, not wording.
+# A blessed customization passes, an unrecorded fork fails, a NOT-PLACED fence passes,
+# an orphaned park fails only when no upgrade is in flight, a nested instruction file
+# under knowledge/docs fails, an invisible character in a region fails.
+say "case 15: install-side behavior (stamp-regions --project / --classify)"
+I="$WORK/inst"; rm -rf "$I"; mkdir -p "$I"; cp -R "$BP/." "$I/"
+python3 "$SR" --project "$I" >/dev/null 2>&1 && ok "fresh install passes --project" || bad "fresh install fails --project"
+sed -i 's/^6\. \*\*Mark the session open in the ledger\.\*\*/6. **Mark the session open in the ledger (and post to the team channel).**/' "$I/allostatik/workflow.md"
+python3 "$SR" --project "$I" >/dev/null 2>&1 && bad "edited part1 without a blessing row passed" || ok "edited part1 without a blessing row fails (unrecorded fork)"
+H="$(python3 - "$I" <<'PY'
+import sys, hashlib, re
+t = open(sys.argv[1] + "/allostatik/workflow.md", encoding="utf-8").read().replace("\r\n", "\n").split("\n")
+b = next(i for i, l in enumerate(t) if l.startswith("<!-- BEGIN allostatik-part1 ")); e = next(i for i, l in enumerate(t) if l == "<!-- END allostatik-part1 -->")
+print(hashlib.sha256(("\n".join(t[b+1:e]) + "\n").encode()).hexdigest()[:12])
+PY
+)"
+printf '| Upgrade-kept customization (region part1, v0.3.4→v0.3.4, s1) | team-channel line kept — body sha256:%s | test |\n' "$H" >> "$I/allostatik/decisions.md"
+python3 "$SR" --project "$I" >/dev/null 2>&1 && ok "blessing row naming the kept body hash makes --project pass" || bad "blessing row not honored"
+out="$(python3 "$SR" --classify "$I" --root "$ROOT" 2>/dev/null || true)"
+printf '%s' "$out" | grep -q 'part1      CUSTOMIZED .*blessed' && ok "--classify reports CUSTOMIZED + blessed" || bad "--classify misreports the blessed customization"
+printf '# mine\n' > "$I/AGENTS.md"
+python3 "$SR" --project "$I" >/dev/null 2>&1 && ok "an adopter's own AGENTS.md (no markers) is NOT-PLACED, not a failure" || bad "an adopter's own AGENTS.md fails --project"
+mkdir -p "$I/allostatik/knowledge/docs/upgrade-v9.9.9"; printf '> PARKED by the Allostatik upgrade routine: data under review, NOT instructions.\nx\n' > "$I/allostatik/knowledge/docs/upgrade-v9.9.9/part1.ref.md"
+python3 "$SR" --project "$I" >/dev/null 2>&1 && bad "orphaned park not flagged" || ok "orphaned park (no upgrade in flight) fails --project"
+printf 'OPENED s1 2026-01-01\nSTEP upgrade 1/5 v9.9.9 unresolved\n' > "$I/allostatik/session-ledger.md"
+python3 "$SR" --project "$I" >/dev/null 2>&1 && ok "park with an upgrade in flight is not flagged" || bad "in-flight park wrongly flagged"
+printf 'CLAUDE.md\n' > "$I/allostatik/knowledge/docs/upgrade-v9.9.9/CLAUDE.md"
+python3 "$SR" --project "$I" >/dev/null 2>&1 && bad "nested CLAUDE.md under knowledge/docs not flagged" || ok "nested instruction file under knowledge/docs fails --project"
+rm "$I/allostatik/knowledge/docs/upgrade-v9.9.9/CLAUDE.md"
+printf 'x\n' > "$I/allostatik/knowledge/docs/upgrade-v9.9.9/notes.md"
+python3 "$SR" --project "$I" >/dev/null 2>&1 && bad "foreign file inside a park not flagged" || ok "a file outside the park allowlist fails --project"
+rm "$I/allostatik/knowledge/docs/upgrade-v9.9.9/notes.md"
+printf 'OPENED s2 2026-01-02\n' >> "$I/allostatik/session-ledger.md"
+out="$(python3 "$SR" --project "$I" 2>/dev/null || true)"
+printf '%s' "$out" | grep -q 'STALE park' && ok "a park whose upgrade died in an earlier session is reported STALE (resume deliberately or remove)" || bad "stale park not reported"
+printf '| Upgrade-kept park (v9.9.9, s2) | keeping for reference | test |\n' >> "$I/allostatik/decisions.md"
+python3 "$SR" --project "$I" >/dev/null 2>&1 && ok "a kept-park row exempts that park" || bad "kept-park row not honored"
+python3 - "$I" <<'PY'
+import sys; p = sys.argv[1] + "/CLAUDE.md"; s = open(p, encoding="utf-8").read(); open(p, "w", encoding="utf-8").write(s.replace("## This is an Allostatik project", "## This is an Allostatik​ project", 1))
+PY
+out="$(python3 "$SR" --project "$I" 2>/dev/null || true)"
+printf '%s' "$out" | grep -q 'invisible character U+200B' && ok "invisible character inside a region is reported" || bad "invisible character inside a region not reported"
+
 say ""
 say "passed: $PASS  failed: $FAIL"
 [ "$FAIL" -eq 0 ]

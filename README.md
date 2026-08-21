@@ -107,6 +107,10 @@ flowchart TD
 
 The routines live in your project's `workflow.md`; they also ship as installable skills (this repo's `skills/` folder — `allostatik-open`, `allostatik-close`, `allostatik-checkpoint`) if your surface supports skills. The skills are thin triggers that make your AI run the `workflow.md` routine at the right moment — the files stay the source of truth.
 
+### Upgrading
+
+Installs can be upgraded from 0.3.4 on. Three regions in your project are upstream-owned and stamped with a version and a body hash — Part 1 of `workflow.md` and the fenced blocks in `CLAUDE.md` / `AGENTS.md`; everything else is yours; the routine never edits it. To upgrade: commit your project, read the newest entry in [CHANGELOG.md](./CHANGELOG.md) (what changed, why it's worth your time, how long it takes), and paste its kickoff prompt to your AI. The routine it follows is [UPGRADING.md](./UPGRADING.md), fetched fresh every time; it runs under the *Upgrade contract* already placed in your `workflow.md`, shows you every region change as a verbatim diff and writes no region change you haven't approved — its only other writes are the parked copy it reviews from (under `allostatik/knowledge/docs/`, removed when it's done) and the rows and ledger lines that record what it did. A region you've edited is reconciled, never overwritten. `allostatik init` still refuses to run on an existing install — upgrading is the path, not re-scaffolding. Today the routine is run by your AI; an `allostatik upgrade` command that does the fetching and classifying for it is planned.
+
 ## Status
 
 **Working:** templates, drift-check, close/update, handoffs, the `allostatik` installers on npm and PyPI (fetch-first with a bundled offline fallback, behavior-parity-tested against `init.sh` — including the pointer block they print), `init.sh` (placement + collision guard), the migrate routine for existing projects, and the shipped skills — `allostatik-init` plus the three session-ritual skills (`allostatik-open`, `allostatik-close`, `allostatik-checkpoint`).

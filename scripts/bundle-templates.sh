@@ -19,6 +19,11 @@ rm -rf "$NPM_DEST" "$PIP_DEST"
 mkdir -p "$(dirname "$NPM_DEST")" "$(dirname "$PIP_DEST")"
 cp -R "$SRC" "$NPM_DEST"
 cp -R "$SRC" "$PIP_DEST"
+# The upgrade path rides along (second channel for UPGRADING.md's cross-check):
+for doc in UPGRADING.md CHANGELOG.md; do
+  cp "$ROOT/$doc" "$(dirname "$NPM_DEST")/$doc"
+  cp "$ROOT/$doc" "$(dirname "$PIP_DEST")/$doc"
+done
 find "$ROOT/installers" -name '.DS_Store' -delete
 
 echo "bundled: templates/project-boilerplate →"

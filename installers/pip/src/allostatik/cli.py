@@ -155,7 +155,9 @@ def main(argv: "list[str] | None" = None) -> None:
             )
         _fail(
             f"STOP: {target}/allostatik already exists — refusing to overwrite.\n"
-            "If this is a partial setup, remove or rename it and re-run.",
+            "Looking to update an existing install? That is an upgrade, not a re-run:\n"
+            "  https://github.com/allostatik/allostatik/blob/main/CHANGELOG.md  (then UPGRADING.md)\n"
+            "If this is a partial setup you want to redo, remove or rename it and re-run.",
             2,
         )
 

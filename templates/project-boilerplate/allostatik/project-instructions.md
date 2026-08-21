@@ -15,7 +15,7 @@ This project's current state lives in files in the `allostatik/` folder — not 
 
 **Closing.** When a session wraps up, update the canonical files for whatever changed (`plan.md`, `decisions.md`, `observations.md`) and confirm the writes landed **before** producing any handoff — the handoff *points at* those files, it doesn't carry state. This is what makes each session build on the last rather than start over.
 
-*(Full open/close routines — the four drift-checks, capture, and handoff shape — live in `allostatik/workflow.md`, which loads alongside these files.)*
+*(Full open/close routines — the five drift-checks, capture, and handoff shape — live in `allostatik/workflow.md`, which loads alongside these files.)*
 
 ## Mode
 

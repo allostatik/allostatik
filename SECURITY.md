@@ -24,9 +24,10 @@ This is a pre-1.0 project with one maintainer. Expect a first reply within a few
 ## In scope
 
 - **The installers** — arbitrary code execution, writing outside the target directory, the existing-`allostatik/` collision guard failing open, or the template fetch falling back to something it shouldn't.
-- **Template sourcing** — all three installers fetch `main` as a tarball at install time (npm and pip fall back to a copy bundled at publish time; `init.sh` halts instead). Anything that lets a third party change what lands on disk.
+- **Template sourcing** — all three installers fetch `main` as a tarball at install time (npm and pip fall back to a copy bundled at publish time; `init.sh` halts instead); upgrades fetch a release *tag*, resolve it to a commit where they can, and work from a parked copy. Anything that lets a third party change what lands on disk.
 - **The published packages** — integrity of `allostatik` on npm and PyPI — and of the deprecated `allostat` packages, which stay published as pointers — including typosquats you come across.
 - **Template content** — a shipped file that steers an assistant toward an action a reasonable user wouldn't sanction: reaching outside the project, writing where it shouldn't, or pulling credentials into a context file that then gets committed.
+- **The upgrade path** — `UPGRADING.md` and `CHANGELOG.md` are fetched by an adopter's AI and steer edits to the instruction files it already follows. Anything that lets fetched content escape the placed *Upgrade contract* — a write outside the three stamped regions, an apply without a shown diff, a suggested command that gets run, render-hidden characters in a shipped file — is in scope. So is a tag or release that doesn't match what the package registries carry for the same version. What the path does and doesn't defend against is written down in `UPGRADING.md`; stamps there are drift fingerprints, not signatures, and I'd rather you held me to that sentence than assumed more.
 
 ## Out of scope
 

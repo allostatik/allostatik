@@ -38,7 +38,7 @@ if [ -d "$TARGET/allostatik" ]; then
   fi
   echo "STOP: $TARGET/allostatik already exists — refusing to overwrite." >&2
   echo "Looking to update an existing install? That is an upgrade, not a re-run:" >&2
-  echo "  https://github.com/allostatik/allostatik/blob/main/CHANGELOG.md  (then UPGRADING.md)" >&2
+  echo "  https://github.com/allostatik/allostatik/blob/main/CHANGELOG.md  (then the README's Upgrading section)" >&2
   echo "If this is a partial setup you want to redo, remove or rename it and re-run." >&2
   exit 2
 fi

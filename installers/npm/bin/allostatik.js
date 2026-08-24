@@ -168,7 +168,7 @@ async function main() {
       [
         `STOP: ${target}/allostatik already exists — refusing to overwrite.`,
         'Looking to update an existing install? That is an upgrade, not a re-run:',
-        '  https://github.com/allostatik/allostatik/blob/main/CHANGELOG.md  (then UPGRADING.md)',
+        "  https://github.com/allostatik/allostatik/blob/main/CHANGELOG.md  (then the README's Upgrading section)",
         'If this is a partial setup you want to redo, remove or rename it and re-run.',
       ].join('\n'),
       2

@@ -251,7 +251,7 @@ for impl in sh npm pip; do
     npm) out="$(run_npm "$d" 2>&1 || true)";;
     pip) out="$(run_pip "$d" 2>&1 || true)";;
   esac
-  printf '%s' "$out" | grep -q 'CHANGELOG.md' && ok "$impl: refusal names CHANGELOG.md / UPGRADING.md" || bad "$impl: refusal still suggests remove-and-re-run only"
+  printf '%s' "$out" | grep -q 'CHANGELOG.md' && printf '%s' "$out" | grep -q "README's Upgrading section" && ok "$impl: refusal names CHANGELOG.md, then the README's Upgrading section" || bad "$impl: refusal doesn't point at CHANGELOG.md and the README's Upgrading section"
 done
 
 # --- Case 15: the install-side checks behave — constructed installs, not wording.

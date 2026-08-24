@@ -27,7 +27,29 @@ This is a pre-1.0 project with one maintainer. Expect a first reply within a few
 - **Template sourcing** — all three installers fetch `main` as a tarball at install time (npm and pip fall back to a copy bundled at publish time; `init.sh` halts instead); upgrades fetch a release *tag*, resolve it to a commit where they can, and work from a parked copy. Anything that lets a third party change what lands on disk.
 - **The published packages** — integrity of `allostatik` on npm and PyPI — and of the deprecated `allostat` packages, which stay published as pointers — including typosquats you come across.
 - **Template content** — a shipped file that steers an assistant toward an action a reasonable user wouldn't sanction: reaching outside the project, writing where it shouldn't, or pulling credentials into a context file that then gets committed.
-- **The upgrade path** — `UPGRADING.md` and `CHANGELOG.md` are fetched by an adopter's AI and steer edits to the instruction files it already follows. Anything that lets fetched content escape the placed *Upgrade contract* — a write outside the three stamped regions, an apply without a shown diff, a suggested command that gets run, render-hidden characters in a shipped file — is in scope. So is a tag or release that doesn't match what the package registries carry for the same version. What the path does and doesn't defend against is written down in `UPGRADING.md`; stamps there are drift fingerprints, not signatures, and I'd rather you held me to that sentence than assumed more.
+- **The upgrade path** — `UPGRADING.md` and `CHANGELOG.md` are fetched by an adopter's AI and steer edits to the instruction files it already follows. Anything that lets fetched content escape the placed *Upgrade contract* — a write outside the three stamped regions, an apply without a shown diff, a suggested command that gets run, render-hidden characters in a shipped file — is in scope. So is a tag or release that doesn't match what the package registries carry for the same version. What the path does and doesn't defend against is the next section, and I'd rather you held me to it than assumed more.
+
+## What the upgrade path defends against — and what it doesn't
+
+You are trusting the tool's repository at one tag, and your own reading of each diff. The stamps on your regions are drift fingerprints: they prove a region changed, not who changed it. Whoever supplies a body can supply its matching stamp. A compromised maintainer account could make the tag, the routine, the changelog, and the published packages all lie together. Against that, the diff you read is the check, and the routine's package cross-check is a second opinion. That cross-check works because releases are committed and tagged before publishing, so npm's `gitHead` names the release commit. A mismatch with what the tag resolves to is visible to anyone.
+
+**It defends against:**
+
+- an install silently falling behind;
+- your own edits being overwritten — a customized region is never auto-replaced;
+- a fetched document rewriting its own rules — the contract is placed, not fetched, and a fetched document can't waive a rule by omitting it;
+- the bytes you reviewed differing from the bytes applied — everything is applied from the parked copy you reviewed, and re-hashed after the write;
+- render-hidden text in a shipped file — the routine scans for it and halts;
+- a half-finished upgrade resuming on a different reference;
+- a parked file being mistaken for instructions — parked files carry non-instruction names and open with a visible *data under review* line.
+
+**It does not defend against:**
+
+- a malicious maintainer;
+- the repository and both package registries compromised at once;
+- an approval you gave without reading;
+- a compromised AI surface;
+- anyone who already has write access to your project.
 
 ## Out of scope
 

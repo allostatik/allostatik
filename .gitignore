@@ -7,3 +7,4 @@ installers/npm/templates/
 installers/pip/dist/
 installers/pip/build/
 installers/pip/src/allostatik/templates/
+_to_delete_*/

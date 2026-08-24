@@ -184,16 +184,18 @@ Use this section to declare anything *project-specific* about that roster: extra
 
 The drift-check's *canonical vs deployed* check (Part 1) compares each canonical file against the place it's deployed, for the surfaces *this project lists here*.
 
-Two surfaces ship by default — most projects have exactly these:
+One surface ships by default, because an install places only project-scoped files:
 
 | Canonical file | Deployed at |
 |---|---|
-| `global_preferences.md` (L1) | Claude's Custom Instructions |
-| `project-instructions.md` (L2) | this project's instructions field |
+| `project-instructions.md` (L2) | this project's instructions field — the pointer block first, then this file's contents below it once you have filled it in |
+
+A personal-layer file like `global_preferences.md` (L1) is **not** placed by an install — it lives outside the project, one copy shared across all of them. If you keep one, add it as a row below.
 
 Add a row for any other surface where a canonical file is deployed and could drift. **A surface can appear more than once** — if you merge layers into a single deployed field (e.g. L3 environment into Custom Instructions alongside L1), list each canonical file as its own row pointing at that shared surface, so the drift-check compares all of them:
 
 <!-- Additional surfaces — one row per pair: `<CANONICAL-FILE>` | <where it's deployed>. -->
+<!-- Example: `global_preferences.md` | Claude's Custom Instructions — a personal-layer file kept outside the project. -->
 <!-- Example: `.cursor/rules/*.mdc` | the Cursor rules a canonical file is mirrored into. -->
 
 ## Closing-protocol additions
@@ -250,6 +252,6 @@ Operational notes specific to how work runs in this project — conventions, qui
 
 ## Related files
 
-- `global_preferences.md` (L1) — the principles the Part 1 routines operationalize.
+- `global_preferences.md` (L1) — the principles the Part 1 routines operationalize. Personal-layer, kept outside the project; an install places no copy.
 - `project-instructions.md` — this project's identity, purpose, mode, and domain context (the counterpart to this file's working notes).
 - The canonical state files — `plan.md`, `decisions.md`, `observations.md`, `vision.md` — that the close reads from and writes to.

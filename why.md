@@ -60,4 +60,4 @@ It's open. It's free. The value was always in the relationship. Now you get to d
 
 ---
 
-*Allostatik is open source (MIT), built in public by the system it describes, and lives at github.com/allostatik/allostatik.*
+*Allostatik is open source (MIT), built by the system it describes, and lives at github.com/allostatik/allostatik.*

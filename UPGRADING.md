@@ -37,7 +37,7 @@ With the reference for the target tag in hand, each region instance lands in exa
 
 Classification compares **bodies**; the version label is consulted only to detect AHEAD. A body equal to the reference is CURRENT whatever its label says.
 
-**Surfaces without a shell** (no sha256 available): classification degrades honestly.
+**Surfaces without a shell** (no sha256 available): classification degrades honestly:
 
 - Stamp *strings* decide current-vs-stale.
 - Customized-vs-pristine collapses into a walk.

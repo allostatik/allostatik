@@ -261,7 +261,7 @@ done
 say "case 15: install-side behavior (stamp-regions --project / --classify)"
 I="$WORK/inst"; rm -rf "$I"; mkdir -p "$I"; cp -R "$BP/." "$I/"
 python3 "$SR" --project "$I" >/dev/null 2>&1 && ok "fresh install passes --project" || bad "fresh install fails --project"
-sed -i 's/^6\. \*\*Mark the session open in the ledger\.\*\*/6. **Mark the session open in the ledger (and post to the team channel).**/' "$I/allostatik/workflow.md"
+sed -i.bak 's/^6\. \*\*Mark the session open in the ledger\.\*\*/6. **Mark the session open in the ledger (and post to the team channel).**/' "$I/allostatik/workflow.md" && rm -f "$I/allostatik/workflow.md.bak"
 python3 "$SR" --project "$I" >/dev/null 2>&1 && bad "edited part1 without a blessing row passed" || ok "edited part1 without a blessing row fails (unrecorded fork)"
 H="$(python3 - "$I" <<'PY'
 import sys, hashlib, re

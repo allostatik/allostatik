@@ -68,6 +68,7 @@ async function fetchLatestBoilerplate(tmpRoot) {
 const CORE_FILES = [
   'project-instructions.md',
   'plan.md',
+  'log.md',
   'decisions.md',
   'observations.md',
   'vision.md',
@@ -258,7 +259,7 @@ async function main() {
   // print it):
   const POINTER_BLOCK = [
     '     This is an Allostatik project. The canonical files in its `allostatik/`',
-    '     folder — `project-instructions.md`, `workflow.md`, `plan.md`,',
+    '     folder — `project-instructions.md`, `workflow.md`, `plan.md`, `log.md`,',
     '     `decisions.md`, … — are the source of truth. At the start of a',
     '     session, read them, follow `workflow.md`, treat them as authoritative,',
     '     and flag anything stale rather than just following it. If they',

@@ -48,7 +48,7 @@ curl -fsSL https://raw.githubusercontent.com/allostatik/allostatik/main/init.sh 
 
 After it runs, point your AI at the files with the pointer block. This is it:
 
-> This is an Allostatik project. The canonical files in its `allostatik/` folder — `project-instructions.md`, `workflow.md`, `plan.md`, `decisions.md`, … — are the source of truth. At the start of a session, read them, follow `workflow.md`, treat them as authoritative, and flag anything stale rather than just following it. If they aren't set up yet, help me set them up — github.com/allostatik/allostatik is the reference.
+> This is an Allostatik project. The canonical files in its `allostatik/` folder — `project-instructions.md`, `workflow.md`, `plan.md`, `log.md`, `decisions.md`, … — are the source of truth. At the start of a session, read them, follow `workflow.md`, treat them as authoritative, and flag anything stale rather than just following it. If they aren't set up yet, help me set them up — github.com/allostatik/allostatik is the reference.
 
 The simplest start: paste it into a conversation in your project and go; the first session walks you through the files and helps you make the pointer permanent. Its permanent home is your project's instructions (the Project Instructions field in Claude Desktop, or your surface's equivalent; Claude Code reads the placed CLAUDE.md on its own, and Cursor and other agents read the placed root AGENTS.md).
 

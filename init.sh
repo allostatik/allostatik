@@ -114,7 +114,7 @@ echo "     ----- copy from here -----"
 # Keep VERBATIM in sync with the README's "Point your project at the files"
 # block (the parity test checks all three installers print it):
 echo "     This is an Allostatik project. The canonical files in its \`allostatik/\`"
-echo "     folder — \`project-instructions.md\`, \`workflow.md\`, \`plan.md\`,"
+echo "     folder — \`project-instructions.md\`, \`workflow.md\`, \`plan.md\`, \`log.md\`,"
 echo "     \`decisions.md\`, … — are the source of truth. At the start of a"
 echo "     session, read them, follow \`workflow.md\`, treat them as authoritative,"
 echo "     and flag anything stale rather than just following it. If they"

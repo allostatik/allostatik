@@ -36,7 +36,7 @@ About two minutes. No account, no service, nothing running. To remove it you del
 
 The installer prints this. Paste it into your project instructions field and leave it there:
 
-> This is an Allostatik project. The canonical files in its `allostatik/` folder — `project-instructions.md`, `workflow.md`, `plan.md`, `decisions.md`, … — are the source of truth. At the start of a session, read them, follow `workflow.md`, treat them as authoritative, and flag anything stale rather than just following it. If they aren't set up yet, help me set them up — github.com/allostatik/allostatik is the reference.
+> This is an Allostatik project. The canonical files in its `allostatik/` folder — `project-instructions.md`, `workflow.md`, `plan.md`, `log.md`, `decisions.md`, … — are the source of truth. At the start of a session, read them, follow `workflow.md`, treat them as authoritative, and flag anything stale rather than just following it. If they aren't set up yet, help me set them up — github.com/allostatik/allostatik is the reference.
 
 Then ask it to **set up the files**, or to **migrate** if the project already knows things about you — migrate cross-checks what it found against what it wrote, so nothing is silently dropped. Confirm it took in a *fresh* conversation, not the one that did the work.
 
@@ -72,8 +72,9 @@ The problem was never that your AI has no context. It is that you do not control
 
 ```
 allostatik/
-  project-instructions.md   plan.md         decisions.md
-  observations.md           vision.md       workflow.md
+  project-instructions.md   plan.md         log.md
+  decisions.md              observations.md vision.md
+  workflow.md
 ```
 
 Three regions belong upstream — Part 1 of `workflow.md`, and the fenced blocks — and an upgrade touches only those. The boundary is a literal line in a file; you can see where it sits, and it is the same line in every project. Everything else is yours: rename it, restructure it, add your own, delete what you do not use.

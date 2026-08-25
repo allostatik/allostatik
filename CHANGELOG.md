@@ -2,6 +2,23 @@
 
 What changed in each release, written for the person deciding whether it's worth twenty minutes. Every entry has the same parts: what's new, why it's worth it, how long it takes, and how to upgrade — either the prompt to paste to your AI, or a pointer to the entry that carries it. The routine your AI follows — and the fine print on what an upgrade can and can't touch — is `UPGRADING.md`.
 
+## 0.3.5 — 2026-08-25 — Session log
+
+**Tag:** `v0.3.5`
+
+**What's new**
+
+- The session log gets its own file, `log.md`. `plan.md` stays a short spine you can read at the start of every session; the log grows underneath it without limit.
+- Your AI writes each session's entry to `log.md` at close and checks its newest entry at the next open — the same routine, pointed at the new file.
+- New installs ship `log.md`. Existing installs are offered it during the upgrade.
+- Two wording fixes in the session routines: the drift-check no longer assumes you keep a personal-layer file, and the upgrade rules state their two size limits as exact numbers.
+
+**Why it's worth it.** `plan.md` was doing two jobs — the current state your AI needs every session, and the whole history of how it got there. In every long-running project the history wins that fight, until the file no longer fits in a session. Splitting them keeps the part you load small and the part you keep complete.
+
+**Takes about 20 minutes** with your AI assisting, plus a few minutes to move your existing entries.
+
+**To upgrade:** commit your project, then paste this to your AI: *Upgrade this project to Allostatik `v0.3.5` — run the upgrade routine under `allostatik/workflow.md` → Upgrade contract, target tag `v0.3.5`.* When it finishes, ask it to move the *Session log* section of `plan.md` — entries included — into `log.md`, leaving `plan.md` with a one-line pointer.
+
 ## 0.3.4 — 2026-08-21 — Upgrades
 
 **Tag:** `v0.3.4`

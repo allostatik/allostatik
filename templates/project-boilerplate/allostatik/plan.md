@@ -13,7 +13,7 @@ Keep this file current at session close, as part of the close routine in `workfl
 - **Status changed?** Update Current state.
 - **Item completed?** Remove it from Sequenced work in flight.
 - **New work surfaced?** Add it to Sequenced work, naming its sequencing strategy.
-- **Session done?** Append an entry to the Session log.
+- **Session done?** Append an entry to `log.md`.
 
 This file is **operational state** only. Don't duplicate `decisions.md` (locked choices) or `observations.md` (recurring process patterns) — point at them, and let each be the source of truth for its own domain.
 
@@ -43,18 +43,13 @@ Each item names the **sequencing strategy** that explains its place in the queue
 
 <!-- A holding area for deferred or not-yet-actionable questions, so they don't get lost between sessions. Claude seeds and maintains these; starts empty. -->
 
-## Session log
-
-<!-- The cumulative, session-by-session record of what happened — the project's whole story, and the durable archive the handoff is only a recent view of. The close routine appends one entry per session (see "Living document discipline" above and the close routine in workflow.md). Claude seeds and grows it; starts empty.
-Entry skeleton: Session [N] ([DATE]): [OUTCOMES] → [NEXT]
-Identifier: default is sequential "Session N". Keep it, or switch to date- or milestone-based naming, or drop explicit numbering — the skeleton and append-at-close discipline stay fixed either way. -->
-
 ## Cross-references
 
 <!-- Pointers to the sibling files this one leans on — point, don't duplicate (each is the source of truth for its own domain). Prune to the files this project actually has. -->
 
 - `project-instructions.md` — identity, purpose, mode, and domain context (Layer 2).
 - `workflow.md` — the session routines (open, drift-check, close, capture, handoff).
+- `log.md` — the session log, append-only; the close appends one entry per session and the next open reads the newest.
 - `decisions.md` — locked choices, with the reasoning behind them.
 - `observations.md` — recurring process patterns.
 - `vision.md` — the project's longer-arc direction.

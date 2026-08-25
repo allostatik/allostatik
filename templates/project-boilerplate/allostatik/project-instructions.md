@@ -11,7 +11,7 @@ Edit at the project-scope location above; sync to the paste destination per your
 
 This project's current state lives in files in the `allostatik/` folder — not in these instructions, which describe the *system*, not where it currently is. On a filesystem surface (Claude Code, Cursor, Claude Desktop with file access) those files load from the repo, and `workflow.md` holds the full routines. These two rituals are the short version:
 
-**Opening.** Before answering anything that depends on current state — "where are we," "what's next," the status of any work — load the `allostatik/` files if you don't already have them, then run the open checks: is `plan.md`'s session log current (if it's behind, a prior close was skipped — backfill it before new work), and do the deployed surfaces still match canonical? Don't reconstruct state from these instructions alone.
+**Opening.** Before answering anything that depends on current state — "where are we," "what's next," the status of any work — load the `allostatik/` files if you don't already have them, then run the open checks: is `log.md`'s session log current (if it's behind, a prior close was skipped — backfill it before new work), and do the deployed surfaces still match canonical? Don't reconstruct state from these instructions alone.
 
 **Closing.** When a session wraps up, update the canonical files for whatever changed (`plan.md`, `decisions.md`, `observations.md`) and confirm the writes landed **before** producing any handoff — the handoff *points at* those files, it doesn't carry state. This is what makes each session build on the last rather than start over.
 

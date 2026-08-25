@@ -36,17 +36,13 @@ About two minutes. No account, no service, nothing running. To remove it you del
 
 The installer prints this. Paste it into your project instructions field and leave it there:
 
-```
-This is an Allostatik project. The canonical files in its `allostatik/` folder — `project-instructions.md`, `workflow.md`, `plan.md`, `decisions.md`, … — are the source of truth. At the start of a session, read them, follow `workflow.md`, treat them as authoritative, and flag anything stale rather than just following it. If they aren't set up yet, help me set them up — github.com/allostatik/allostatik is the reference.
-```
+> This is an Allostatik project. The canonical files in its `allostatik/` folder — `project-instructions.md`, `workflow.md`, `plan.md`, `decisions.md`, … — are the source of truth. At the start of a session, read them, follow `workflow.md`, treat them as authoritative, and flag anything stale rather than just following it. If they aren't set up yet, help me set them up — github.com/allostatik/allostatik is the reference.
 
 Then ask it to **set up the files**, or to **migrate** if the project already knows things about you — migrate cross-checks what it found against what it wrote, so nothing is silently dropped. Confirm it took in a *fresh* conversation, not the one that did the work.
 
 **Optional, once per account,** instead of pasting per project:
 
-```
-Some of my projects use a layered context system: canonical files (an `allostatik/` folder, with a `CLAUDE.md` listing what to load) that are the source of truth. When a project has them: load them, treat them as authoritative, follow its `workflow.md` to keep them in sync (drift-check at start, update at close), and flag anything stale rather than following it. If a project doesn't have them, ignore this.
-```
+> Some of my projects use a layered context system: canonical files (an `allostatik/` folder, with a `CLAUDE.md` listing what to load) that are the source of truth. When a project has them: load them, treat them as authoritative, follow its `workflow.md` to keep them in sync (drift-check at start, update at close), and flag anything stale rather than following it. If a project doesn't have them, ignore this.
 
 ## The honest part
 
@@ -89,7 +85,7 @@ You could write your own files. What you cannot write for yourself is a standard
 Opposites held in tension rather than resolved. In each, the value is in the relationship between the poles, and the job is to show you where the line sits and let you move it.
 
 | | held against | |
-|---|---|---|
+|---|:---:|---|
 | the creator | ↔ | the AI |
 | one standard that carries | ↔ | malleable to your needs |
 | correct back to the setpoint | ↔ | move the setpoint (homeostasis ↔ allostasis) |

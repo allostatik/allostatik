@@ -16,9 +16,9 @@ If the install predates 0.3.4 there is no placed contract yet. The bootstrap ent
 | `claude-md` | `CLAUDE.md` — the fenced block | `BEGIN allostatik` … `END allostatik` | upstream, locally revisable |
 | `agents-md` | `AGENTS.md` — the fenced block | `BEGIN allostatik` … `END allostatik` | upstream, locally revisable |
 
-That is the whole upgrade surface. Part 2 of `workflow.md`, `plan.md`, `decisions.md`, `observations.md`, `vision.md`, `project-instructions.md`, `knowledge/`, `skills/` — the adopter's, permanently; you never write there except to add the rows and ledger lines that record what you did, and the park you review from. A file new in a release is *offered*; declining it is recorded so it isn't offered again. Nothing is deleted.
+That is the whole upgrade surface. Part 2 of `workflow.md`, `plan.md`, `decisions.md`, `observations.md`, `vision.md`, `project-instructions.md`, `knowledge/` and `skills/` are the adopter's, permanently; you never write there except to add the rows and ledger lines that record what you did, and the park you review from. A file new in a release is *offered*; declining it is recorded so it isn't offered again. Nothing is deleted.
 
-**The stamp.** The BEGIN marker carries upstream's version and a body hash: sha256 over the bytes strictly between the two marker lines — from the character after the BEGIN line's newline up to, not including, the first character of the END line — with CRLF normalized to LF, UTF-8, truncated to 12 hex characters. The reference implementation is `scripts/stamp-regions.py` in this repo; `sed 's/\r$//' | sha256sum` over those lines gives the same digest. A stamp always holds *upstream's* values — you copy them from the reference and never compute or invent one.
+**The stamp.** The BEGIN marker carries upstream's version and a body hash. The hash is sha256 over the bytes strictly between the marker lines: from the character after the BEGIN line's newline up to, not including, the END line's first character. That hash is computed with CRLF normalized to LF, the bytes read as UTF-8, and the digest truncated to 12 hex characters. The reference implementation is `scripts/stamp-regions.py` in this repo; `sed 's/\r$//' | sha256sum` over those lines gives the same digest. A stamp always holds *upstream's* values — you copy them from the reference and never compute or invent one.
 
 ## How a region is classified
 
@@ -37,7 +37,13 @@ With the reference for the target tag in hand, each region instance lands in exa
 
 Classification compares **bodies**; the version label is consulted only to detect AHEAD. A body equal to the reference is CURRENT whatever its label says.
 
-**Surfaces without a shell** (no sha256 available): classification degrades honestly. Stamp *strings* decide current-vs-stale; customized-vs-pristine collapses into a walk; hash verification is carried to a surface with a shell and said so in the ledger. The AI never invents a stamp value to fill the gap.
+**Surfaces without a shell** (no sha256 available): classification degrades honestly.
+
+- Stamp *strings* decide current-vs-stale.
+- Customized-vs-pristine collapses into a walk.
+- Hash verification is carried to a surface with a shell, and you say so in the ledger.
+
+The AI never invents a stamp value to fill the gap.
 
 ## The routine — for the AI running it
 

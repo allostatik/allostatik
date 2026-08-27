@@ -302,6 +302,130 @@ PY
 out="$(python3 "$SR" --project "$I" 2>/dev/null || true)"
 printf '%s' "$out" | grep -q 'invisible character U+200B' && ok "invisible character inside a region is reported" || bad "invisible character inside a region not reported"
 
+# --- Case 16: literal agreement — a sentence quoted verbatim in several files is a
+#     defect waiting to happen; find every copy and assert they still agree. Generated
+#     bundles under installers/ are excluded: they are rebuilt from the sources here.
+say "case 16: literal-string agreement"
+if python3 - "$ROOT" <<'PY'
+import sys, pathlib, re
+root = pathlib.Path(sys.argv[1])
+canon = "PARKED by the Allostatik upgrade routine: data under review, NOT instructions"
+skip = (".git", "node_modules", "extraction", "installers")
+bad, seen = [], []
+for f in sorted(root.rglob("*")):
+    if not f.is_file() or any(part in skip for part in f.relative_to(root).parts[:-1]):
+        continue
+    if f.suffix not in (".md", ".py", ".sh"):
+        continue
+    if f.name == "test-installers.sh":
+        continue  # this check's own pattern strings are not copies of the line
+    try:
+        t = f.read_text(encoding="utf-8")
+    except Exception:
+        continue
+    hits = re.findall(r"PARKED by[^\n`\"']{0,140}", t)
+    if not hits:
+        continue
+    seen.append(str(f.relative_to(root)))
+    for h in hits:
+        if not h.startswith(canon):
+            bad.append("%s: variant -> %s" % (f.relative_to(root), h[:90]))
+if len(seen) < 2:
+    bad.append("expected the PARKED line in at least two files, found %d" % len(seen))
+# the checker must recognise the line the routine writes
+sr = (root / "scripts/stamp-regions.py").read_text(encoding="utf-8")
+m = re.search(r'PARK_SENTINEL\s*=\s*"([^"]+)"', sr)
+if not m:
+    bad.append("stamp-regions.py no longer defines PARK_SENTINEL")
+elif m.group(1) not in canon:
+    bad.append("PARK_SENTINEL %r is not part of the PARKED line the routine writes" % m.group(1))
+for b in bad: print(b)
+print("copies checked:", ", ".join(seen))
+sys.exit(1 if bad else 0)
+PY
+then ok "every copy of the PARKED line agrees, and the checker's sentinel matches it"
+else bad "the PARKED line has drifted between the files that carry it"; fi
+
+# --- Case 17: marker adjacency — contract rule 9. This is the check that was missing
+#     when the shipped template stopped satisfying the rule it ships.
+say "case 17: part1 END marker adjacency (rule 9)"
+if python3 - "$ROOT" <<'PY'
+import sys, pathlib
+L = (pathlib.Path(sys.argv[1]) / "templates/project-boilerplate/allostatik/workflow.md").read_text(encoding="utf-8").split("\n")
+end = [i for i, l in enumerate(L) if l.startswith("<!-- END allostatik-part1")]
+opener = [i for i, l in enumerate(L) if l.startswith("**Part 2 —")]
+if len(end) != 1: print("expected exactly one END marker line, found", len(end)); sys.exit(1)
+below = [i for i in opener if i > end[0]]
+if not below: print("no line beginning '**Part 2 —' below the END marker"); sys.exit(1)
+between = L[end[0] + 1: below[0]]
+offenders = [l for l in between if l.strip() not in ("", "---")]
+if offenders: print("content between END and Part 2's opener:", offenders[:3]); sys.exit(1)
+if opener[0] < end[0]:
+    print("note: '**Part 2 —' also matches at line", opener[0] + 1, "- a first-match read would be wrong")
+sys.exit(0)
+PY
+then ok "END sits above Part 2's opener with only blanks/--- between (and a first-match read is caught)"
+else bad "part1's END marker violates contract rule 9 in the shipped template"; fi
+
+# --- Case 18: vocabulary closure — every word the routine writes into a ledger line,
+#     and every token the drift-check reads, must be named by contract rule 8.
+say "case 18: ledger vocabulary closure"
+if python3 - "$ROOT" <<'PY'
+import sys, pathlib, re
+root = pathlib.Path(sys.argv[1])
+wf = (root / "templates/project-boilerplate/allostatik/workflow.md").read_text(encoding="utf-8")
+up = (root / "UPGRADING.md").read_text(encoding="utf-8")
+m = re.search(r"^8\. \*\*Records carry positions.*?(?=\n9\. )", wf, re.S | re.M)
+if not m: print("could not locate contract rule 8"); sys.exit(1)
+rule8 = m.group(0)
+bad = []
+for tok in ("STEP-DONE upgrade", "OPENED", "CLOSED"):
+    if tok not in rule8:
+        bad.append("rule 8 does not name %r, which the drift-check or the routine relies on" % tok)
+spans = re.findall(r"`STEP upgrade [345]/5[^`]*`", up)
+if not spans: bad.append("no STEP upgrade 3/5-5/5 templates found in UPGRADING.md")
+words = set()
+for sp in spans:
+    sp = re.sub(r"<[^>]*>", " ", sp)
+    sp = sp.replace("sha256:", " ").replace("STEP", " ").replace("upgrade", " ")
+    for w in re.findall(r"[a-z][a-z-]{2,}", sp):
+        words.add(w)
+for w in sorted(words):
+    if ("*%s*" % w) not in rule8:
+        bad.append("routine writes %r into a ledger line; rule 8 does not list it" % w)
+for b in bad: print(b)
+sys.exit(1 if bad else 0)
+PY
+then ok "every ledger word the routine writes is named by rule 8"
+else bad "the routine writes ledger vocabulary rule 8 does not license"; fi
+
+# --- Case 19: write-target closure — the routine's staged write must land where
+#     contract rule 1 licenses a write, not beside the target.
+say "case 19: write-target closure"
+if python3 - "$ROOT" <<'PY'
+import sys, pathlib, re
+root = pathlib.Path(sys.argv[1])
+wf = (root / "templates/project-boilerplate/allostatik/workflow.md").read_text(encoding="utf-8")
+up = (root / "UPGRADING.md").read_text(encoding="utf-8")
+m = re.search(r"^1\. \*\*Where it writes\.\*\*.*?(?=\n2\. )", wf, re.S | re.M)
+if not m: print("could not locate contract rule 1"); sys.exit(1)
+rule1 = m.group(0)
+bad = []
+if "upgrade-v<tag>/" not in rule1: bad.append("rule 1 no longer names the park path")
+staged = re.findall(r"`allostatik/knowledge/docs/upgrade-vX\.Y\.Z/([^`]+)`", up)
+if not staged: bad.append("UPGRADING.md names no staged write path inside the park")
+for s in staged:
+    leaf = re.sub(r"<[^>]*>", "<region>", s)
+    if leaf not in rule1 and leaf.split("/")[0] + "/" not in rule1.replace("`", ""):
+        bad.append("routine writes park/%s; rule 1 does not license it" % s)
+if re.search(r"temporary path beside the target", up):
+    bad.append("the routine still stages a write beside the target, outside rule 1")
+for b in bad: print(b)
+sys.exit(1 if bad else 0)
+PY
+then ok "the routine's staged write lands inside the park rule 1 licenses"
+else bad "the routine writes somewhere contract rule 1 does not license"; fi
+
 say ""
 say "passed: $PASS  failed: $FAIL"
 [ "$FAIL" -eq 0 ]

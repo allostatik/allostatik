@@ -37,7 +37,7 @@ You are trusting the tool's repository at one tag, and your own reading of each 
 
 - an install silently falling behind;
 - your own edits being overwritten — a customized region is never auto-replaced;
-- a fetched document rewriting its own rules — the contract is placed, not fetched, and a fetched document can't waive a rule by omitting it;
+- a fetched document rewriting its own rules — the contract is placed, not fetched, so a fetched document can neither waive a rule by omitting it nor narrow one. A narrowing halts;
 - the bytes you reviewed differing from the bytes applied — everything is applied from the parked copy you reviewed, and re-hashed after the write;
 - render-hidden text in a shipped file — the routine scans for it and halts;
 - a half-finished upgrade resuming on a different reference;

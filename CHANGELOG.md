@@ -2,6 +2,24 @@
 
 What changed in each release, written for the person deciding whether it's worth twenty minutes. Every entry has the same parts: what's new, why it's worth it, how long it takes, and how to upgrade — either the prompt to paste to your AI, or a pointer to the entry that carries it. The routine your AI follows — and the fine print on what an upgrade can and can't touch — is `UPGRADING.md`.
 
+## 0.3.6 — 2026-08-27 — Clearer upgrades
+
+**Tag:** `v0.3.6`
+
+**What's new**
+
+- Before it changes anything, your AI explains the release in plain terms: what it's for, what changes in *your* project, what it costs you, where it may write, and how to stop. Before the first diff, not after the second one.
+- Every change is still shown and still approved — now with its reason attached, so a handful of fragments reads as the one change it actually is.
+- An upgrade now starts by establishing what it can be undone to: whether your tree is clean, whether a second session is open on the project, and which commit to come back to.
+- A first upgrade no longer mistakes the tool's own writing *about* a file for that file's markings, and the start-of-session check no longer reports a skipped session when your history has yet to move into `log.md`.
+- An upgrade can no longer be talked out of its own safety checks by the document it downloads. Before this release one could, quietly. Only you can relax the rules an upgrade runs under. Only you can relax the rules an upgrade runs under.
+
+**Why it's worth it.** Upgrading is the one moment a tool reaches into files your assistant obeys every day, so it asks your permission. Until now it asked without explaining, and a diff without its reason is a decision you can't actually make. This release is the first pass at that: the same gates, with the reasons attached, and four places where the rules and the steps disagreed put right.
+
+**Takes about 15 minutes** with your AI assisting.
+
+**To upgrade:** commit your project, then paste this to your AI: *Upgrade this project to Allostatik `v0.3.6` — run the upgrade routine under `allostatik/workflow.md` → Upgrade contract, target tag `v0.3.6`.*
+
 ## 0.3.5 — 2026-08-25 — Session log
 
 **Tag:** `v0.3.5`

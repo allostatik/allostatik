@@ -9,6 +9,7 @@ description = "Installer for Allostatik — a folder of canonical context files 
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"
+license-files = ["LICENSE"]
 keywords = ["allostatik", "claude", "cursor", "ai", "context", "configuration", "scaffold"]
 classifiers = [
     "Development Status :: 3 - Alpha",

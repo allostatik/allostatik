@@ -24,9 +24,14 @@ for doc in UPGRADING.md CHANGELOG.md; do
   cp "$ROOT/$doc" "$(dirname "$NPM_DEST")/$doc"
   cp "$ROOT/$doc" "$(dirname "$PIP_DEST")/$doc"
 done
+# The licence text rides too: neither package root holds one in source, and a
+# published package that carries no LICENSE ships its terms by reference only.
+cp "$ROOT/LICENSE" "$ROOT/installers/npm/LICENSE"
+cp "$ROOT/LICENSE" "$ROOT/installers/pip/LICENSE"
 find "$ROOT/installers" -name '.DS_Store' -delete
 
 echo "bundled: templates/project-boilerplate →"
 echo "  installers/npm/templates/  ($(find "$NPM_DEST" -type f | wc -l | tr -d ' ') files)"
 echo "  installers/pip/src/allostatik/templates/  ($(find "$PIP_DEST" -type f | wc -l | tr -d ' ') files)"
+echo "  LICENSE → installers/npm/ and installers/pip/"
 echo "Next: see installers/README.md 'Releasing' for the publish steps."

@@ -27,8 +27,12 @@ allostatik = "allostatik.cli:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
-packages = ["allostatik"]
+# templates/ is data-only but importable as a namespace package, so setuptools
+# wants it declared; its hyphenated subdirs cannot be packages and ride as its
+# package-data. Declaring it here is what retires the build_py "absent from
+# packages" warning (verified: wheel file list identical before/after).
+packages = ["allostatik", "allostatik.templates"]
 include-package-data = true
 
 [tool.setuptools.package-data]
-allostatik = ["templates/**/*"]
+"allostatik.templates" = ["**/*"]

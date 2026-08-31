@@ -261,7 +261,9 @@ done
 say "case 15: install-side behavior (stamp-regions --project / --classify)"
 I="$WORK/inst"; rm -rf "$I"; mkdir -p "$I"; cp -R "$BP/." "$I/"
 python3 "$SR" --project "$I" >/dev/null 2>&1 && ok "fresh install passes --project" || bad "fresh install fails --project"
-sed -i.bak 's/^6\. \*\*Mark the session open in the ledger\.\*\*/6. **Mark the session open in the ledger (and post to the team channel).**/' "$I/allostatik/workflow.md" && rm -f "$I/allostatik/workflow.md.bak"
+# Keyed on text, not on the step's number: pinning a position made this mutation silently
+# no-op when Session open gained a step at 0.3.7, and the case passed by doing nothing (#260).
+sed -i.bak 's/\*\*Mark the session open in the ledger\.\*\* Append one line/**Mark the session open in the ledger (and post to the team channel).** Append one line/' "$I/allostatik/workflow.md" && rm -f "$I/allostatik/workflow.md.bak"
 python3 "$SR" --project "$I" >/dev/null 2>&1 && bad "edited part1 without a blessing row passed" || ok "edited part1 without a blessing row fails (unrecorded fork)"
 H="$(python3 - "$I" <<'PY'
 import sys, hashlib, re
@@ -425,6 +427,76 @@ sys.exit(1 if bad else 0)
 PY
 then ok "the routine's staged write lands inside the park rule 1 licenses"
 else bad "the routine writes somewhere contract rule 1 does not license"; fi
+
+say "case 20: record-index gate closure (0.3.7)"
+if python3 - "$ROOT" <<'PY'
+import sys, pathlib, re
+root = pathlib.Path(sys.argv[1])
+wf  = (root / "templates/project-boilerplate/allostatik/workflow.md").read_text(encoding="utf-8")
+cl  = (root / "templates/project-boilerplate/CLAUDE.md").read_text(encoding="utf-8")
+ag  = (root / "templates/project-boilerplate/AGENTS.md").read_text(encoding="utf-8")
+bad = []
+
+# Neither fence may name the record: the open routine reads it, so that a break-out
+# never has to edit an upstream-owned region.
+for name, txt, pat in (("CLAUDE.md", cl, r"^@allostatik/(decisions|observations)\.md"),
+                       ("AGENTS.md", ag, r"^- `allostatik/(decisions|observations)\.md`")):
+    body = re.search(r"BEGIN allostatik .*?END allostatik", txt, re.S)
+    if body and re.search(pat, body.group(0), re.M):
+        bad.append("%s still loads the record from inside the fence" % name)
+
+step = re.search(r"^3\. \*\*Read the record.*?(?=^4\. )", wf, re.S | re.M)
+if not step:
+    bad.append("Session open has no step 3 reading the record")
+else:
+    t = step.group(0)
+    for needle, why in (("120,000 bytes", "the byte budget"),
+                        ("decisions-and-observations-index.md", "the index filename"),
+                        ("halts the open", "the halt"),
+                        ("INDEXING.md", "the walkthrough pointer"),
+                        ("wc -c", "the check command"),
+                        ("as a whole, not each file", "that the budget covers the record, not each file"),
+                        ("Do not size the record", "the no-resize rule for the index state"),
+                        ("Record-index declined", "the verbatim decline row"),
+                        ("un-runnable, not passed", "the branch for a surface that cannot size a file")):
+        if needle not in t:
+            bad.append("open step 3 does not name %s" % why)
+
+close = re.search(r"^2\. \*\*Update canonical state\.\*\*.*?(?=^3\. )", wf, re.S | re.M)
+if not close or "decisions-and-observations-index.md" not in close.group(0):
+    bad.append("the close does not regenerate the index alongside the entries it indexes")
+
+d2 = re.search(r"^2\. \*\*Imports vs folder contents\.\*\*.*?$", wf, re.M)
+for f in ("decisions.md", "observations.md"):
+    if not d2 or ("allostatik/" + f) not in d2.group(0):
+        bad.append("drift-check 2 does not exempt %s from the orphan check" % f)
+
+sk = root / "skills/allostatik-open/SKILL.md"
+if sk.exists():
+    st = sk.read_text(encoding="utf-8")
+    if re.search(r"All (six|seven|eight) open steps", st):
+        bad.append("the open skill hardcodes a step count; it drifts when the routine grows")
+    if re.search(r"Session open steps 1.[0-9]", st):
+        bad.append("the open skill hardcodes a step range")
+    if "read the record" not in st.lower():
+        bad.append("the open skill never mentions reading the record")
+
+ix = root / "INDEXING.md"
+if not ix.exists():
+    bad.append("INDEXING.md is missing")
+else:
+    t = ix.read_text(encoding="utf-8")
+    if "never run it" not in t:
+        bad.append("INDEXING.md does not forbid running the fetched generator")
+    if "not touched" not in t:
+        bad.append("INDEXING.md does not promise the record is untouched")
+
+for b in bad:
+    print(b)
+sys.exit(1 if bad else 0)
+PY
+then ok "record-index gate: fences clear, open halts, close regenerates, walkthrough ships"
+else bad "the record-index gate is incoherent across the files that carry it"; fi
 
 say ""
 say "passed: $PASS  failed: $FAIL"

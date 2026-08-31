@@ -16,9 +16,12 @@ that protect the routine from shortcuts.
 1. **The project's `workflow.md` is authoritative, not this skill.** Projects
    customize Part 2 and may log skip rows in `decisions.md`. If this skill and
    the project's files disagree, the files win.
-2. **No substantive work before the open completes.** All six open steps, in
-   order. The user asking an eager first question does not waive the ritual —
-   fold the answer into the session plan (step 5).
+2. **No substantive work before the open completes.** Every open step the
+   project's file lists, in its order. This skill deliberately gives no count
+   and no step numbers: it was written when there were six, a seventh was added
+   at 0.3.7, and a skill that enumerates drifts silently the first time the
+   routine grows. The user asking an eager first question does not waive the
+   ritual — fold the answer into the session-plan step.
 3. **Every check failure follows the same pattern: halt, surface, ask.** Never
    silently reconcile drift, never guess at a missing file, never proceed on
    assumption.
@@ -26,9 +29,10 @@ that protect the routine from shortcuts.
    canonical file from disk and the deployed surface as it reads now. If a
    deployed surface can't be read back on this surface, say so and carry it as
    a reconcile-before-work item — an un-runnable check is not a passed check.
-5. **A stale session log means a skipped close.** If `plan.md`'s newest entry
-   is behind reality, backfill it before any new work (workflow.md's
-   session-log freshness check says how).
+5. **A stale session log means a skipped close.** If `log.md`'s newest entry is
+   behind reality, backfill it before any new work (workflow.md's session-log
+   freshness check says how). On an install from before 0.3.5 the log still
+   lives in `plan.md`; the freshness check names that case.
 
 ## Flow
 
@@ -36,10 +40,12 @@ that protect the routine from shortcuts.
    `allostatik/workflow.md` **Session open** + **Drift-check**, then the files
    they point at (`project-instructions.md`, `plan.md`, and the rest of the
    canonical set).
-2. Execute Session open steps 1–6 exactly as the project's copy states them:
-   verify capability → read context (including the ledger's tail) → drift-check
-   → restate the state in your own words → share the numbered session plan and
-   wait for approval → mark the session open in the ledger.
+2. Execute every Session open step exactly as the project's copy states it, in
+   that file's order and numbering — the file is the list, this is not. At 0.3.7
+   it runs: verify capability → read context (including the ledger's tail) →
+   read the record and check its size against the budget → drift-check → restate
+   the state in your own words → share the numbered session plan and wait for
+   approval → mark the session open in the ledger. Read the count off the file.
    A `STEP` line in the ledger with no matching `STEP-DONE` means a long routine
    — a first run or a migration — died mid-flight. Surface it before the plan;
    resuming it at the next unrecorded step *is* the plan.

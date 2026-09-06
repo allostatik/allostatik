@@ -71,13 +71,19 @@ The problem was never that your AI has no context. It is that you do not control
 **Yours from the moment it lands.**
 
 ```
+CLAUDE.md
+AGENTS.md
 allostatik/
   project-instructions.md   plan.md         log.md
   decisions.md              observations.md vision.md
   workflow.md
+  knowledge/
+    environment.md          resources.md
+    docs/README.md
+  skills/README.md
 ```
 
-Three regions belong upstream — Part 1 of `workflow.md`, and the fenced blocks — and an upgrade touches only those. The boundary is a literal line in a file; you can see where it sits, and it is the same line in every project. Everything else is yours: rename it, restructure it, add your own, delete what you do not use.
+Three regions belong upstream — Part 1 of `workflow.md`, and the fenced blocks in `CLAUDE.md` and `AGENTS.md` — and an upgrade touches only those. The boundary is a literal line in a file; you can see where it sits, and it is the same line in every project. Everything else is yours: rename it, restructure it, add your own, delete what you do not use.
 
 You could write your own files. What you cannot write for yourself is a standard — the same convention in the next project, and the one after. Standard and give pull against each other, and taken as a tradeoff one has to lose: a standard with no give is a straitjacket you drop at the first project that does not fit; give with no standard is a beast per repo, and nothing carries. Held together, the standard is what makes your changes mean something in the next project, and the give is what keeps the standard from being something you fight.
 
@@ -127,8 +133,14 @@ Allostatik targets **[OpenSSF OSPS Baseline Level 1](https://baseline.openssf.or
 
 `why.md` — the argument at length. `concepts.md` — the design reasoning.
 
-<!-- FEEDBACK: reproduced verbatim from the current README -->
+## Feedback
 
-<!-- LICENSE: reproduced verbatim from the current README -->
+Issues and PRs welcome — templates and docs especially. Your project config stays yours.
 
-<!-- DISCLAIMER: reproduced verbatim from the current README -->
+## License
+
+MIT.
+
+## Disclaimer
+
+Allostatik is a set of files and conventions for managing the context an AI assistant works from. The assistant's responses are generated, non-deterministic, and may be inaccurate or incomplete — they are the assistant's output, not the author's. Verify anything that matters before relying on it. Allostatik is for general productivity and configuration purposes and is not legal, financial, medical, safety, or other professional advice. You are responsible for how you use it and for any actions taken on your behalf. Provided "as is", without warranty, under the MIT License.

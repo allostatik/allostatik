@@ -32,7 +32,7 @@ pip install allostatik && allostatik init .    # PyPI
 curl -fsSL https://raw.githubusercontent.com/allostatik/allostatik/main/init.sh | sh -s -- .
 ```
 
-About two minutes. No account, no service, nothing running. To remove it you delete what it added: the `allostatik/` folder, the `CLAUDE.md` and `AGENTS.md` it placed at your root, and the block you pasted into your project instructions. For a trial with no consequences, install in a git worktree, work a session or two, then delete it — every trace goes with it except that pasted block.
+About two minutes. No account, no service, nothing running. Removing it is deleting what it added: the `allostatik/` folder, the fenced block it keeps inside `CLAUDE.md` and `AGENTS.md` — the rest of those files is yours — and the block you pasted into your project instructions. For a trial with no consequences, install in a git worktree, work a session or two, then delete it — every trace goes with it except that pasted block.
 
 The installer prints this. Paste it into your project instructions field and leave it there:
 

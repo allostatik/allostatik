@@ -59,6 +59,16 @@ Three properties turn the architecture from a static setup into something that g
 
 **It spreads — the strange loop.** The methodology runs on itself: improving how the AI behaves improves the system that improves how the AI behaves. It ships as files *and* the loop that maintains them — each adopter becomes a node running their own version, learned by *using* the setup rather than reading about it. It's Constitutional AI taken one layer further: the model has a constitution, you layer your own, and you also run the loop that keeps revising yours.
 
+## The edges of a session: a goal going in, a debrief coming out
+
+A session is two parties with different jobs. The AI does the work. The human says what the work is for and, at the end, whether it did that. Every routine between those two moments exists to keep the AI honest; the two moments themselves are where the human steers, so their shape matters most.
+
+**The open asks for a goal, not a plan.** A numbered plan is *how*, and how is the AI's job. A human asked to approve one either approves it unread or reads it and redirects the session anyway. What only the human can set is the purpose and the finish line: what will be true at the close that is not true now. Military planners call this commander's intent — state the purpose and the end state, and leave the steps to whoever executes, because the plan will change and the intent will not. Scrum's sprint goal is the same idea. A goal is a starting point, not a promise: direction can change at any time, and the close records the change.
+
+**The close asks five questions, in full.** What was our goal? What did we do well? What did we learn? What could we have done differently? What still puzzles us. They are Norm Kerth's retrospective questions, descended from the Army's After Action Review, which opens by comparing what was supposed to happen with what did. Each answer has a home in the record, and that is what closes the loop: a lesson with no file to land in is gone by the next session.
+
+**Both are spoken in the human's words.** A reader holds about four things in working memory. A sentence costs one per idea, and a word the reader must translate costs one more. So the goal and the debrief use short sentences, name the doer as the subject, and put the project's own coinages into plain words. The research behind that is cognitive load theory (Sweller) and its application to readers with no time to spare (Rogers and Lasky-Fink, *Writing for Busy Readers*).
+
 <!-- SECTION:BEGIN in-one-breath -->
 ## In one breath
 

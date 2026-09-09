@@ -20,7 +20,7 @@ Session rituals ensure the context persists throughout your project. Open, work,
 
 - **Surfaces are adapters.** Ports and adapters (hexagonal architecture) with your context as the core. The surface holds no logic; it just brings the files together. A new tool is one adapter, not a restart.
 
-- **The human stays in the loop, deliberately.** Involvement always sits on a spectrum, from approving every keystroke to signing off on the plan. Most setups leave the spot to chance. This one defines it: automate the mechanical, gate the meaningful. Nothing rewrites your files without sign-off.
+- **The human stays in the loop, deliberately.** Involvement always sits on a spectrum, from approving every keystroke to signing off on the goal. Most setups leave the spot to chance. This one defines it: automate the mechanical, gate the meaningful. Nothing rewrites your files without sign-off.
 
 - **The setpoints evolve.** A thermostat corrects back to a fixed target. Allostatik is allostatic: the target itself can move. Stray from a principle once, and it corrects you back. Stray the same way repeatedly, and it asks whether the principle is still right. That's double-loop learning, with you as the gate. Configuration that matures instead of fossilizing.
 

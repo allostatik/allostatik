@@ -64,7 +64,7 @@ The problem was never that your AI has no context. It is that you do not control
 
 **The maintenance half.** Everyone builds the capture half; you probably have. Almost nobody builds the other one — the close, where updating your record is the same act as ending your session, so it actually happens, and the drift-check. Skip it and your folder ages quietly, and a stale rule just keeps steering. Keep it and your files stay fresh, trimmed and auditable — checked against what your AI loads, distilled to what still earns its place, readable line by line.
 
-**A gate meant to move.** Automate the mechanical, gate the meaningful. Early on you approve nearly everything; as the files earn it, the direction of travel is approval moving from per-step toward per-plan.
+**A gate meant to move.** Automate the mechanical, gate the meaningful. Early on you approve nearly everything; as the files earn it, the direction of travel is approval moving from per-step toward per-goal.
 
 **Setpoints that move too.** Stray from a convention once and the files correct you back. Stray the same way three sessions running and the close asks whether the convention still fits. A thermostat holds a fixed target; an allostatic system can move the target, because the right setpoint depends on the season. That is what the name means. Ask a model cold whether a rule still fits and it has no grounds to answer — three of the same correction is evidence and one is noise, but only if the record lives outside the conversation that produced it.
 

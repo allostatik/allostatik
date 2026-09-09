@@ -43,17 +43,18 @@ that protect the routine from shortcuts.
 2. Execute every Session open step exactly as the project's copy states it, in
    that file's order and numbering — the file is the list, this is not. At 0.3.7
    it runs: verify capability → read context (including the ledger's tail) →
-   read the record and check its size against the budget → drift-check → restate
-   the state in your own words → share the numbered session plan and wait for
-   approval → mark the session open in the ledger. Read the count off the file.
+   read the record and check its size against the budget → drift-check → state
+   the goal in plain words and wait for approval → mark the session open in the
+   ledger. Read the count off the file.
    A `STEP` line in the ledger with no matching `STEP-DONE` means a long routine
-   — a first run or a migration — died mid-flight. Surface it before the plan;
-   resuming it at the next unrecorded step *is* the plan.
+   — a first run or a migration — died mid-flight. Surface it before the goal;
+   resuming it at the next unrecorded step *is* the goal.
 3. If the handoff carries a "DO BEFORE THIS HANDOFF IS CONSUMED" item, it goes
-   first — before the session plan.
+   first — before the goal.
 
 ## What good looks like
 
 The user gets: any drift surfaced and reconciled (or explicitly carried), a
-restatement of where things stand that is yours rather than a paste, and a
-numbered session plan they approved — all before any real work happened.
+goal for the session in plain words — how we got here, what it is for, what we
+might learn, what done looks like — that they approved, all before any real work
+happened.

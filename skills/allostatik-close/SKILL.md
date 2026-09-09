@@ -16,7 +16,7 @@ happens, in the right order, without shortcuts.
 1. **The project's `workflow.md` is authoritative, not this skill.** Its Part 2
    may add close steps or skip rows; they apply.
 2. **Order is load-bearing; the handoff is LAST.** Verify this session opened in
-   the ledger → reflective pass → update canonical files → re-paste deployed
+   the ledger → debrief → update canonical files → re-paste deployed
    surfaces → confirm it landed → mark the session closed in the ledger →
    commit and push (if version control) → project-specific additions → handoff
    → name the session. A handoff written before saves are confirmed describes
@@ -28,8 +28,8 @@ happens, in the right order, without shortcuts.
    check the setup allows — `git status` showing exactly the edited files, a
    re-read of what's on disk, or the user confirming manual saves. An edit you
    made earlier in the conversation is not evidence it's on disk now.
-4. **Nothing derived this session may end up orphaned.** The reflective pass
-   exists to catch content that was produced and referenced but never written
+4. **Nothing derived this session may end up orphaned.** The debrief's last two
+   questions catch content that was produced and referenced but never written
    into a canonical file. Name orphans; route each to the file that owns it.
 5. **The user gates every write.** Propose the updates per file; apply on
    approval. If something can't be persisted this session (a re-paste the user

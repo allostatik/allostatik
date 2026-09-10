@@ -2,6 +2,23 @@
 
 What changed in each release, written for the person deciding whether to do it now. Every entry has the same parts: what's new, why it's worth it, what it costs, and how to upgrade — either the prompt to paste to your AI, or a pointer to the entry that carries it. The routine your AI follows — and the fine print on what an upgrade can and can't touch — is `UPGRADING.md`.
 
+## 0.3.9 — 2026-09-10 — Plain words, complete
+
+**Tag:** `v0.3.9`
+
+**This includes 0.3.8**, which was tagged and never released. Running it on this project first turned up four sentences the new wording had dropped. One checks that your AI's retelling of where things stand matches the files. One says what a step shown beneath the goal carries. One is the debrief's zoom-out question. One is its sweep for anything produced but never saved. All four are back.
+
+**What's new**
+
+- Everything in 0.3.8 below: the goal-first open, the five-question close, the handoff that mirrors the opening, and the plan that stays short.
+- The four sentences above, restored.
+
+**Why it's worth it.** The same reasons as 0.3.8, and this is the version you can install.
+
+**What it costs.** As 0.3.8: wording in the session routine, a short walk with every change shown, nothing in your own files moves.
+
+**To upgrade:** commit your project, then paste this to your AI: *Upgrade this project to Allostatik `v0.3.9` — run the upgrade routine under `allostatik/workflow.md` → Upgrade contract, target tag `v0.3.9`.*
+
 ## 0.3.8 — 2026-09-10 — Plain words
 
 **Tag:** `v0.3.8`

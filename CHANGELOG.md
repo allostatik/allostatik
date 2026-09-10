@@ -2,6 +2,23 @@
 
 What changed in each release, written for the person deciding whether to do it now. Every entry has the same parts: what's new, why it's worth it, what it costs, and how to upgrade — either the prompt to paste to your AI, or a pointer to the entry that carries it. The routine your AI follows — and the fine print on what an upgrade can and can't touch — is `UPGRADING.md`.
 
+## 0.3.8 — 2026-09-10 — Plain words
+
+**Tag:** `v0.3.8`
+
+**What's new**
+
+- Every session now starts with its goal in plain words — how you got here, what the session is for, what you might learn, what done looks like — and you say yes. Before, you approved a list of steps.
+- Every session ends with a short debrief: what was the goal, what went well, what did we learn, what could we have done differently, what still puzzles us. Each answer is one plain sentence with its home named, and your AI files it where the next session will find it.
+- The handoff reads like the next session's opening: the goal first, then what was discussed, then the technical part for whoever needs it.
+- Your plan file stays short. Finished work moves to the log and deferred work to a parked file, word for word, with a pointer left where it was. Two warnings tell you when the plan, or its status note, has grown past what a session should carry.
+
+**Why it's worth it.** The two turns that matter most in a session are the first and the last, and both were written for the AI rather than for you. A goal you can read in four short parts is one you can correct before any work happens. A debrief you answer in your own words is one the next session can act on. And a plan that stays short keeps the opening readable: you should not have to scroll past history to find what comes next.
+
+**What it costs.** The changes are wording in the session routine, so the walk is short and every change is still shown and approved. Nothing in your own files moves. One thing is yours to add if you want it. Fresh projects now say, in each record file, that an entry's first sentence states a claim rather than a topic. An existing project adds that one sentence to `decisions.md` and `observations.md` by hand.
+
+**To upgrade:** commit your project, then paste this to your AI: *Upgrade this project to Allostatik `v0.3.8` — run the upgrade routine under `allostatik/workflow.md` → Upgrade contract, target tag `v0.3.8`.*
+
 ## 0.3.7 — 2026-08-30 — Lighter sessions
 
 **Tag:** `v0.3.7`

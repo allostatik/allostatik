@@ -35,9 +35,9 @@ happens, in the right order, without shortcuts.
    approval. If something can't be persisted this session (a re-paste the user
    must do), it goes at the top of the handoff as a "DO BEFORE THIS HANDOFF IS
    CONSUMED" item — never silently dropped.
-6. **Handoffs point, they don't restate.** The next session's goal in four
-   parts, required reading, a pointer to the routines — plain part on top,
-   technical detail beneath. Detail that lives in `plan.md` or `decisions.md`
+6. **Handoffs point, they don't restate.** The top mirrors the next open:
+   the next session's goal in four parts, then the debrief, then required
+   reading, then a pointer to the routines; technical detail beneath. Detail that lives in `plan.md` or `decisions.md`
    is referenced, not copied — copies go stale the moment the files change.
 7. **Each debrief answer is one plain sentence with its home named.** The
    entry is written into its file, not pasted into the turn, and the approved

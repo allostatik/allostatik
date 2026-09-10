@@ -8,7 +8,7 @@ This file has two sections. **Candidates** are patterns still being validated. *
 
 A separate path runs to `decisions.md`: when an observation hardens into a commitment that constrains future work, it becomes a locked decision there, with the originating number noted for lineage (e.g. "promoted from observations #12"). The two paths are independent — an observation can promote within this file, get locked as a decision, both, or neither. The distinction is descriptive (a pattern noticed) vs. constraining (a commitment made).
 
-**Update protocol.** The capture cadence lives in `workflow.md`; this file just holds the results. At session close: add new candidates, note any that fired again, promote the ones past the threshold, and retire candidates that have gone several sessions without firing.
+**Update protocol.** The capture cadence lives in `workflow.md`; this file just holds the results. An entry's first sentence states the claim and what it changes — it is the line an index carries, and the sentence the user approved at the close. At session close: add new candidates, note any that fired again, promote the ones past the threshold, and retire candidates that have gone several sessions without firing.
 
 **Last updated:** [YYYY-MM-DD]
 

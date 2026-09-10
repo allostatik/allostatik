@@ -1,4 +1,4 @@
-<!-- BEGIN allostatik-part1 v0.3.7 sha256:04c0b63c4864 -->
+<!-- BEGIN allostatik-part1 v0.3.7 sha256:92ee685b9b45 -->
 # Workflow
 
 This file holds the routines Claude runs at the start and end of every session in this project, plus the project-specific pieces those routines need. It's the operational half of your project config — identity, purpose, and domain context live in `project-instructions.md`; this file is procedure.
@@ -124,8 +124,10 @@ Where a step's mechanism depends on your setup — can Claude write files direct
     - what we learned and could have done differently → `observations.md`;
     - what still puzzles us → `plan.md`'s open questions.
 
-    *Check (output):* the goal was read back, and each answer has its home. *If it fails:* an answer with no home is lost by the next open — file it before continuing.
-2. **Update canonical state.** Fold the session's changes into the files that own them: current state / in-flight work → `plan.md`; the session's log entry → `log.md`; newly locked choices → `decisions.md`; new process patterns or re-firings → `observations.md`; direction shifts → `vision.md`; and, where the project has broken out to an index, a regenerated `decisions-and-observations-index.md` in the same commit as the entries it indexes — an index that lags its record misdescribes it, and the next open's verify will halt on it; plus any project-specific canonical files listed under *Canonical files* (Part 2). *How they get saved depends on your setup:* Claude writes the files directly (file access to the repo), or hands you each updated file to save yourself (paste / manual-write surfaces). *Check (output):* every change has a durable home.
+    Show each answer as one plain sentence with its home named beside it; write the entry into its file, and don't paste the entry into the turn. The sentence the user approves becomes the entry's first line, the line an index carries. What was read at the close is then what the next session looks up.
+
+    *Check (output):* the goal was read back, each answer was one sentence with a home named, and the entry's first line is that sentence. *If it fails:* an answer with no home is lost by the next open — file it before continuing.
+2. **Update canonical state.** Fold the session's changes into the files that own them: current state / in-flight work → `plan.md`; the session's log entry → `log.md`; newly locked choices → `decisions.md`; new process patterns or re-firings → `observations.md`; direction shifts → `vision.md`; and, where the project has broken out to an index, a regenerated `decisions-and-observations-index.md` in the same commit as the entries it indexes — an index that lags its record misdescribes it, and the next open's verify will halt on it; plus any project-specific canonical files listed under *Canonical files* (Part 2). When `plan.md` carries finished narrative or deferred reasoning, move it out: finished blocks to `log.md`, deferred ones to a parked file. The walkthrough is `RETIRING.md` at the root of the tool's repo, fetched when needed rather than placed. *How they get saved depends on your setup:* Claude writes the files directly (file access to the repo), or hands you each updated file to save yourself (paste / manual-write surfaces). *Check (output):* every change has a durable home.
 3. **Re-paste edited surfaces (SEND).** If you edited a file that's also deployed (global preferences → Custom Instructions; project instructions → project field), re-paste it so the deployed copy matches. *Check (comparison):* deployed now matches canonical. *If you can't re-paste this session:* carry it as a "DO BEFORE THIS HANDOFF IS CONSUMED" item at the top of the handoff, so the next session reconciles before doing anything else.
 4. **Confirm it landed** — use the strongest check your setup allows:
     - **Version control:** run `git status` and confirm every file you edited shows modified, and nothing you didn't.
@@ -158,9 +160,11 @@ A handoff is the message that kicks off the next session. It carries forward wha
 
 What every handoff carries:
 
-- **Next-session goals** — what to accomplish next, in a suggested priority order the next session can adjust, each with a one-line "why."
+- **The next session's goal** — in the four parts the open reads back: how we got here, what it is for, what we might learn, what done looks like. A goal is a starting point; the next open rewrites it in its own words, and that rewrite is its check.
 - **Required reading** — the specific files (and sections) to read first, in order. Point at them; don't paste them.
 - **A pointer to the close routine** — a reminder to run this file's session-open and session-close steps.
+
+**Order it for the reader: plain on top, technical beneath.** Status in one line — where the work stands, what is owed, whose move. Then the debrief's five questions with both parties' answers, in short sentences. Then the goal above, then required reading. Beneath, for whoever needs them: what moved (files and why, commits by hash, each push and how it was confirmed). Then the state of each repo, open items with their triggers, and the working notes that changed. A section with nothing to say is dropped, not filled.
 
 **Size it to layer maturity — fat when empty, lean when mature.** Early on, when your canonical files are thin, the handoff carries more itself (there's little to point at yet). As the files fill in, the handoff gets leaner — goals plus pointers — because the detail now lives where it belongs. The weight of the handoff is inversely proportional to how mature your layers are.
 
@@ -170,7 +174,7 @@ What every handoff carries:
 
 Add any conventions specific to *this* project's handoffs under *Handoff conventions* in Part 2.
 
-*Check (attribution):* the handoff points at the canonical files rather than restating them. *Check (output):* it names next-session goals and required reading, and surfaces any blocking carry up top.
+*Check (attribution):* the handoff points at the canonical files rather than restating them. *Check (output):* it names the next session's goal in four parts and required reading, plain part first, and surfaces any blocking carry up top.
 
 ## Upgrade contract
 

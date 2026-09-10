@@ -499,5 +499,26 @@ then ok "record-index gate: fences clear, open halts, close regenerates, walkthr
 else bad "the record-index gate is incoherent across the files that carry it"; fi
 
 say ""
+# --- plan retirement: RETIRING.md ships, the close points at it, the reference test passes (s117)
+if python3 - "$ROOT" <<'PY' >/dev/null 2>&1 && python3 "$ROOT/scripts/test_park_plan.py" >/dev/null 2>&1
+import re, sys
+from pathlib import Path
+root = Path(sys.argv[1]); bad = []
+rt = root / "RETIRING.md"
+if not rt.exists(): bad.append("RETIRING.md is missing")
+else:
+    t = rt.read_text(encoding="utf-8")
+    if "never run it" not in t: bad.append("RETIRING.md does not forbid running the fetched script")
+    if "verbatim" not in t: bad.append("RETIRING.md does not promise verbatim moves")
+wf = (root / "templates/project-boilerplate/allostatik/workflow.md").read_text(encoding="utf-8")
+step = re.search(r"^2\. \*\*Update canonical state.*?(?=^3\. )", wf, re.S | re.M)
+if not step or "RETIRING.md" not in step.group(0): bad.append("close step 2 does not point at RETIRING.md")
+if not (root / "scripts/retire-plan.py").exists(): bad.append("scripts/retire-plan.py is missing")
+for b in bad: print(b)
+sys.exit(1 if bad else 0)
+PY
+then ok "plan retirement: RETIRING.md ships, close step 2 points at it, test_park_plan.py passes"
+else bad "plan retirement is incoherent across RETIRING.md, close step 2 and scripts/"; fi
+
 say "passed: $PASS  failed: $FAIL"
 [ "$FAIL" -eq 0 ]

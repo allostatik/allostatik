@@ -1,4 +1,4 @@
-<!-- BEGIN allostatik-part1 v0.3.9 sha256:4ddca856d3d1 -->
+<!-- BEGIN allostatik-part1 v0.3.9 sha256:811441e6e405 -->
 # Workflow
 
 This file holds the routines Claude runs at the start and end of every session in this project, plus the project-specific pieces those routines need. It's the operational half of your project config — identity, purpose, and domain context live in `project-instructions.md`; this file is procedure.
@@ -119,7 +119,7 @@ Run these at the end of every session, in order. This is the one routine the sys
 Where a step's mechanism depends on your setup — can Claude write files directly? do you use version control? — it names the common cases. **The handoff (step 7) is the last step that carries state forward; write it only after everything else is confirmed saved**, so it describes real state, not assumed state. Step 8 closes the session. Any project-specific close steps (see *Closing-protocol additions* in Part 2) run alongside these — after the persist/confirm steps and before the handoff.
 
 0. **Verify this session opened in the ledger.** `allostatik/session-ledger.md`'s most recent `OPENED` line should be this session's. Missing? The open never ran — run **Session open** retroactively now (at minimum its drift-check and session-log freshness check), then continue the close. The routines guard each other: a skipped open is caught here; a skipped close is caught by the next open's freshness check. *Check (state):* this session's `OPENED` line exists.
-1. **Debrief — five questions, asked in full.** *What was our goal?* — say what it was and what happened against it, including any change of direction and why. Then give your answers and ask the user for theirs: *What did we do well? What did we learn? What could we have done differently? What still puzzles us?* End with *Anything else?* Any answer may be "nothing today." Your own findings — friction, a higher-level framing the step-by-step view missed, content produced but never saved — are your answers to the last two. Every answer has a home in step 2:
+1. **Debrief — five questions, asked in full.** *What was our goal?* — say what it was and what happened against it, including any change of direction and why. Then answer the other four yourself: *What did we do well? What did we learn? What could we have done differently? What still puzzles us?* Any answer may be "nothing today." End by asking the user one thing, at the top of the turn if the turn is long: *Anything else to add?* — their additions, never their own set of answers. Your own findings — friction, a higher-level framing the step-by-step view missed, content produced but never saved — are your answers to the last two. Every answer has a home in step 2:
     - what happened → the log entry;
     - what we learned and could have done differently → `observations.md`;
     - what still puzzles us → `plan.md`'s open questions.
@@ -164,7 +164,7 @@ What every handoff carries:
 - **Required reading** — the specific files (and sections) to read first, in order. Point at them; don't paste them.
 - **A pointer to the close routine** — a reminder to run this file's session-open and session-close steps.
 
-**Order it for the reader: plain on top, technical beneath.** The top mirrors the next session's open: first the goal, in the four parts the open reads back. Then the debrief: the five questions with both parties' answers, in short sentences. Then required reading. Beneath, for whoever needs them: what moved (files and why, commits by hash, each push and how it was confirmed). Then the state of each repo, open items with their triggers, and the working notes that changed. A section with nothing to say is dropped, not filled.
+**Order it for the reader: plain on top, technical beneath.** The top mirrors the next session's open: first the goal, in the four parts the open reads back. Then the debrief: the five questions with their answers and the user's additions, in short sentences. Then required reading. Beneath, for whoever needs them: what moved (files and why, commits by hash, each push and how it was confirmed). Then the state of each repo, open items with their triggers, and the working notes that changed. A section with nothing to say is dropped, not filled.
 
 **Size it to layer maturity — fat when empty, lean when mature.** Early on, when your canonical files are thin, the handoff carries more itself (there's little to point at yet). As the files fill in, the handoff gets leaner — goals plus pointers — because the detail now lives where it belongs. The weight of the handoff is inversely proportional to how mature your layers are.
 

@@ -1,4 +1,4 @@
-<!-- BEGIN allostatik-part1 v0.3.9 sha256:8c908de7b79f -->
+<!-- BEGIN allostatik-part1 v0.3.9 sha256:89ad1b50eca2 -->
 # Workflow
 
 This file holds the routines Claude runs at the start and end of every session in this project, plus the project-specific pieces those routines need. It's the operational half of your project config — identity, purpose, and domain context live in `project-instructions.md`; this file is procedure.
@@ -164,7 +164,7 @@ What every handoff carries:
 - **Required reading** — the specific files (and sections) to read first, in order. Point at them; don't paste them.
 - **A pointer to the close routine** — a reminder to run this file's session-open and session-close steps.
 
-**Order it for the reader: plain on top, technical beneath.** The top mirrors the next session's open: first the goal, in the four parts the open reads back. Then required reading — and the close's debrief belongs there as a pointer to this session's `log.md` entry, never as a copy of it. Beneath, for whoever needs them: what moved (files and why, commits by hash, each push and how it was confirmed). Then the state of each repo, open items with their triggers, and the working notes that changed. A section with nothing to say is dropped, not filled.
+**Order it for the reader: plain on top, technical beneath.** The top mirrors the next session's open: first the goal, in the four parts the open reads back. Then required reading — and the close's debrief belongs there as a pointer to this session's `log.md` entry, never as a copy of it. Beneath: the state each repo or workstream is in now, and open items with the trigger each is waiting on. The test for a section is whether the next session needs it to begin. A section that reports on the session now ending — what moved, what was learned, what it was named — belongs to the close and its record instead. A section with nothing to say is dropped, not filled.
 
 **Size it to layer maturity — fat when empty, lean when mature.** Early on, when your canonical files are thin, the handoff carries more itself (there's little to point at yet). As the files fill in, the handoff gets leaner — goals plus pointers — because the detail now lives where it belongs. The weight of the handoff is inversely proportional to how mature your layers are.
 

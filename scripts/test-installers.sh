@@ -514,6 +514,9 @@ wf = (root / "templates/project-boilerplate/allostatik/workflow.md").read_text(e
 step = re.search(r"^2\. \*\*Update canonical state.*?(?=^3\. )", wf, re.S | re.M)
 if not step or "RETIRING.md" not in step.group(0): bad.append("close step 2 does not point at RETIRING.md")
 if not (root / "scripts/retire-plan.py").exists(): bad.append("scripts/retire-plan.py is missing")
+pl = (root / "templates/project-boilerplate/allostatik/plan.md").read_text(encoding="utf-8")
+if "Mark it" not in pl or "[parked]" not in pl or "RETIRING.md" not in pl:
+    bad.append("template plan.md does not carry the mark-it bullet (~~ / [parked] / RETIRING.md)")
 for b in bad: print(b)
 sys.exit(1 if bad else 0)
 PY

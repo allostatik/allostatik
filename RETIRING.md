@@ -4,6 +4,12 @@
 
 ## What moves, and where
 
+**Measure first, so the marks go where the words are.** A word count per section shows where the file's weight actually sits:
+
+```
+awk '/^#/{if(h!="")printf "%6d  %s\n",n,h; h=$0; n=0; next} {n+=NF} END{if(h!="")printf "%6d  %s\n",n,h}' allostatik/plan.md | sort -rn | head
+```
+
 **Finished narrative goes to `log.md`.** Mark a block done: strike its head line with `~~`, write `DONE` in it, or tick a `- [x]` item. At the close it moves, whole and verbatim, under a dated heading at the end of `log.md`. The head line stays in `plan.md` with a one-line pointer. A `*Status sN:*` paragraph needs no mark: every one except the newest moves. A block of one or two lines moves whole and leaves nothing, because its head is its content.
 
 **Deferred reasoning goes to `knowledge/docs/plan-parked.md`.** Mark a section heading or a list item `[parked]` and its body moves there whole, leaving the head line and a pointer. A parked item's head line is what stays, so write the claim and the trigger into that line before marking: the plan still says what the item is and when it comes back. The parked file is read when a trigger fires, never at the open.

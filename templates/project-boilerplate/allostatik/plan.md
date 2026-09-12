@@ -11,7 +11,9 @@ It ships as a lean spine: these section headers plus the discipline for keeping 
 Keep this file current at session close, as part of the close routine in `workflow.md` — that routine owns the *how*; this is just what to touch here:
 
 - **Status changed?** Update Current state.
-- **Item completed?** Remove it from Sequenced work in flight.
+- **Item finished or deferred? Mark it.** Strike a done block's head line with `~~`, or put `[parked]` on a deferred
+  section's or item's head line with its trigger written into that line. The close moves the body out and leaves the head
+  line with a pointer, so nothing is deleted by hand. See `RETIRING.md` in the tool's repo.
 - **New work surfaced?** Add it to Sequenced work, naming its sequencing strategy.
 - **Session done?** Append an entry to `log.md`.
 

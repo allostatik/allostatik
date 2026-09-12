@@ -280,6 +280,28 @@ mv "$I/AGENTS.md" "$I/AGENTS.md.away"
 python3 "$SR" --project "$I" >/dev/null 2>&1 && ok "a project with no AGENTS.md at all is ABSENT, not a failure" || bad "a missing AGENTS.md fails --project"
 printf '%s' "$(python3 "$SR" --classify "$I" --root "$ROOT" 2>/dev/null || true)" | grep -q 'agents-md .*ABSENT' && ok "--classify reports a missing file as ABSENT" || bad "--classify misreports a missing AGENTS.md"
 grep -q 'ABSENT' "$ROOT/UPGRADING.md" && ok "UPGRADING.md documents the ABSENT class" || bad "ABSENT is implemented but undocumented in UPGRADING.md"
+
+say ""
+# --- brief numbers carry their command (s119: both fleet walks fabricated counts under the old rule)
+if python3 - "$ROOT" <<'PY' >/dev/null 2>&1
+import re, sys
+from pathlib import Path
+root = Path(sys.argv[1]); bad = []
+up = (root / "UPGRADING.md").read_text(encoding="utf-8")
+m = re.search(r"^3\. \*\*What it costs them.*?(?=^4\. )", up, re.S | re.M)
+if not m:
+    bad.append("brief part 3 (What it costs them) not found -- did the parts renumber?")
+else:
+    part3 = m.group(0)
+    if "command" not in part3 or "numstat" not in part3:
+        bad.append("brief part 3 does not require a command beside each number (looks for the word and the worked example)")
+    if "from memory" not in part3:
+        bad.append("brief part 3 does not forbid rebuilding a command's output from memory")
+for b in bad: print(b)
+sys.exit(1 if bad else 0)
+PY
+then ok "brief part 3: every number carries the command that produced it, and no rebuilt transcripts"
+else bad "brief part 3 no longer requires a command beside each number"; fi
 mv "$I/AGENTS.md.away" "$I/AGENTS.md"
 printf '# mine\n' > "$I/AGENTS.md"
 python3 "$SR" --project "$I" >/dev/null 2>&1 && ok "an adopter's own AGENTS.md (no markers) is NOT-PLACED, not a failure" || bad "an adopter's own AGENTS.md fails --project"

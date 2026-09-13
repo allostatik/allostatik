@@ -229,6 +229,20 @@ grep -q 'wrapped in backticks' "$BP/allostatik/workflow.md" \
 # invisible characters in any template or fetched doc), and a fresh install classifies
 # CURRENT on every region (the placed stamps are upstream's, copied, and hash true).
 # Mutation check: edit one byte inside a region without --write and the first check fails.
+# --- Case 10b: the close ends by SAYING it closed. A skipped close produces no
+# output at all, so that sentence's absence is the only tell the user gets; the
+# routine and the close skill must both require it (Colby, s120 side note).
+say "case 10b: the close states that it closed"
+grep -q "say plainly that it is closed" "$WF" \
+  && ok "close step 8 requires the closing statement" \
+  || bad "close step 8 no longer requires the session to be declared closed"
+grep -q "the turn's last line states the session is closed" "$WF" \
+  && ok "close step 8's own check tests for it" \
+  || bad "close step 8 states the rule but does not check it"
+grep -q "saying the session is closed" "$ROOT/skills/allostatik-close/SKILL.md" \
+  && ok "the close skill requires it too" \
+  || bad "the close skill and close step 8 disagree about the closing statement"
+
 say "case 11: stamped regions"
 SR="$ROOT/scripts/stamp-regions.py"
 if out="$(python3 "$SR" --root "$ROOT" 2>&1)"; then

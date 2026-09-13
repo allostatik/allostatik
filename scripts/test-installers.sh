@@ -83,6 +83,33 @@ for impl in npm pip; do
   [ "$(cat "$d/AGENTS.md")" = "MINE-A" ] && ok "$impl: existing AGENTS.md untouched" || bad "$impl: AGENTS.md overwritten"
   [ -f "$d/allostatik/AGENTS.md.allostatik-block" ] && ok "$impl: AGENTS sidecar written" || bad "$impl: AGENTS sidecar missing"
   printf '%s' "$out" | grep -q 'EXISTING project' && ok "$impl: existing mode detected" || bad "$impl: mode detection"
+  # Step 1 must follow what was actually placed. Until 0.3.11 it said "Claude
+  # Code or Cursor? Skip this step" unconditionally, so every adopter whose own
+  # CLAUDE.md was sidecarred was told to skip the one step their install needed
+  # and the install did nothing (found by a cold install run, s120).
+  printf '%s' "$out" | grep -q 'Skip this' \
+    && bad "$impl: step 1 says skip after sidecarring the adopter's file" \
+    || ok "$impl: step 1 does not say skip after a sidecar"
+  for f in CLAUDE.md AGENTS.md; do
+    printf '%s' "$out" | grep -q "Add the block at allostatik/$f.allostatik-block to it" \
+      && ok "$impl: step 1 names the $f block to merge" \
+      || bad "$impl: step 1 leaves the $f block unmentioned"
+  done
+done
+
+# --- Case 2b: only CLAUDE.md exists — the commonest real shape, and the one the
+# hardcoded step 1 broke. Cursor is pointed at; Claude Code is not, and must be told.
+say "case 2b: step 1 follows placement, not a hardcoded surface list"
+for impl in npm pip; do
+  d="$WORK/exist1-$impl"; mkdir -p "$d/src"
+  printf '# my project\n' > "$d/README.md"; printf 'MINE\n' > "$d/CLAUDE.md"
+  out="$( { [ "$impl" = npm ] && run_npm "$d"; } || true; { [ "$impl" = pip ] && run_pip "$d"; } || true )"
+  printf '%s' "$out" | grep -q 'Claude Code? Not yet' \
+    && ok "$impl: names Claude Code as not yet pointed" \
+    || bad "$impl: claims Claude Code is pointed at files when CLAUDE.md was sidecarred"
+  printf '%s' "$out" | grep -q 'Cursor? Done' \
+    && ok "$impl: names Cursor as done (AGENTS.md was placed)" \
+    || bad "$impl: does not report the placed AGENTS.md as done"
 done
 
 # --- Case 3: guards — refuse overwrite (exit 2) and tool-repo collision (exit 2).

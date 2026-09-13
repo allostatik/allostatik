@@ -71,9 +71,11 @@ cp -R "$SRC/allostatik" "$TARGET/allostatik"
 # hand (or by your AI, gated) per the template's own instructions.
 if [ -f "$TARGET/CLAUDE.md" ]; then
   cp "$SRC/CLAUDE.md" "$TARGET/allostatik/CLAUDE.md.allostatik-block"
+  CLAUDE_PLACED=no
   CLAUDE_NOTE="existing CLAUDE.md left untouched — the Allostatik block to add is at allostatik/CLAUDE.md.allostatik-block"
 else
   cp "$SRC/CLAUDE.md" "$TARGET/CLAUDE.md"
+  CLAUDE_PLACED=yes
   CLAUDE_NOTE="CLAUDE.md placed (Claude Code manifest; harmless on other surfaces)"
 fi
 
@@ -81,9 +83,11 @@ fi
 # surfaces load it from the project root.
 if [ -f "$TARGET/AGENTS.md" ]; then
   cp "$SRC/AGENTS.md" "$TARGET/allostatik/AGENTS.md.allostatik-block"
+  AGENTS_PLACED=no
   AGENTS_NOTE="existing AGENTS.md left untouched — the Allostatik block to add is at allostatik/AGENTS.md.allostatik-block"
 else
   cp "$SRC/AGENTS.md" "$TARGET/AGENTS.md"
+  AGENTS_PLACED=yes
   AGENTS_NOTE="AGENTS.md placed (Cursor and other AGENTS.md surfaces; harmless elsewhere)"
 fi
 
@@ -104,11 +108,24 @@ echo ""
 echo "allostatik/ placed in $TARGET  ($CLAUDE_NOTE; $AGENTS_NOTE)"
 echo ""
 echo "Next steps (the files take it from here):"
-echo "  1. Point your project at the files. Claude Code or Cursor? Skip this"
-echo "     step — the placed CLAUDE.md / AGENTS.md does it. Claude Desktop?"
-echo "     This step is yours: create a project for this work (if one doesn't"
-echo "     exist yet), then paste this block into its Project Instructions"
-echo "     field. Other surfaces: the project-level instructions slot."
+echo "  1. Point your project at the files."
+# The surface lines are built from what was actually placed. A hardcoded
+# "skip this step" told every adopter who already had a CLAUDE.md to skip the
+# one step their install needed, and the install then did nothing (s120).
+for pair in "Claude Code:CLAUDE.md:$CLAUDE_PLACED" "Cursor:AGENTS.md:$AGENTS_PLACED"; do
+  surface=${pair%%:*}; rest=${pair#*:}; file=${rest%%:*}; placed=${rest#*:}
+  if [ "$placed" = yes ]; then
+    echo "     $surface? Done — the placed $file points at them."
+  else
+    echo "     $surface? Not yet — your own $file was left untouched."
+    echo "     Add the block at allostatik/$file.allostatik-block to it,"
+    echo "     or ask your AI to."
+  fi
+done
+echo "     Claude Desktop? This step is yours: create a project for this work"
+echo "     (if one doesn't exist yet), then paste this block into its Project"
+echo "     Instructions field. Other surfaces: the project-level instructions"
+echo "     slot."
 echo ""
 echo "     ----- copy from here -----"
 # Keep VERBATIM in sync with the README's "Point your project at the files"

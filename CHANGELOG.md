@@ -2,6 +2,22 @@
 
 What changed in each release, written for the person deciding whether to do it now. Every entry has the same parts: what's new, why it's worth it, what it costs, and how to upgrade — either the prompt to paste to your AI, or a pointer to the entry that carries it. The routine your AI follows — and the fine print on what an upgrade can and can't touch — is `UPGRADING.md`.
 
+## 0.3.11 — 2026-09-13 — What the installer skipped
+
+**Tag:** `v0.3.11`
+
+**What's new**
+
+- Install onto a project that already has its own `CLAUDE.md` or `AGENTS.md`, and the installer no longer tells you to skip the step that points your AI at the files. It never touched your file — it left the block beside it in `allostatik/` — and now its next steps say so, one line per surface, built from what it actually placed.
+
+**Why it's worth it.** Until now it printed one fixed line: *Claude Code or Cursor? Skip this step — the placed CLAUDE.md / AGENTS.md does it.* On a project that already had a `CLAUDE.md` there was no placed `CLAUDE.md` to do it. So the install reported success, you skipped the step it told you to skip, and nothing pointed at the files — your next session ran as though you had never installed anything. Every version until this one did that.
+
+**What it costs.** Nothing in your project, and nothing in your files. Three lines of installer output change, and they only change on the projects that were getting the wrong ones.
+
+**Already installed, and want to know whether this hit you?** Open your `CLAUDE.md` and look for a line starting `<!-- BEGIN allostatik`. If it isn't there and `allostatik/CLAUDE.md.allostatik-block` is, you were affected: add that block to your `CLAUDE.md`, or ask your AI to. Same check for `AGENTS.md` on Cursor. Nothing else in your install is wrong.
+
+**To upgrade:** commit your project, then paste this to your AI: *Upgrade this project to Allostatik `v0.3.11` — run the upgrade routine under `allostatik/workflow.md` → Upgrade contract, target tag `v0.3.11`.* This release changes no template text, so the upgrade will only move version labels — and it will not repair the install above, which is the manual check.
+
 ## 0.3.10 — 2026-09-13 — What a release takes away
 
 **Tag:** `v0.3.10`

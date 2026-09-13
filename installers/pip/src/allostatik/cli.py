@@ -199,12 +199,14 @@ def main(argv: "list[str] | None" = None) -> None:
             shutil.copyfile(
                 boilerplate / "CLAUDE.md", target_allostatik / "CLAUDE.md.allostatik-block"
             )
+            claude_placed = False
             claude_note = (
                 "existing CLAUDE.md left untouched — the Allostatik block to add is at "
                 "allostatik/CLAUDE.md.allostatik-block"
             )
         else:
             shutil.copyfile(boilerplate / "CLAUDE.md", target_claude_md)
+            claude_placed = True
             claude_note = "CLAUDE.md placed (Claude Code manifest; harmless on other surfaces)"
 
         # AGENTS.md: same rule — never overwrite. Cursor and other
@@ -214,12 +216,14 @@ def main(argv: "list[str] | None" = None) -> None:
             shutil.copyfile(
                 boilerplate / "AGENTS.md", target_allostatik / "AGENTS.md.allostatik-block"
             )
+            agents_placed = False
             agents_note = (
                 "existing AGENTS.md left untouched — the Allostatik block to add is at "
                 "allostatik/AGENTS.md.allostatik-block"
             )
         else:
             shutil.copyfile(boilerplate / "AGENTS.md", target_agents_md)
+            agents_placed = True
             agents_note = "AGENTS.md placed (Cursor and other AGENTS.md surfaces; harmless elsewhere)"
     finally:
         tmp_ctx.cleanup()
@@ -248,17 +252,32 @@ def main(argv: "list[str] | None" = None) -> None:
         "     aren't set up yet, help me set them up — github.com/allostatik/allostatik",
         "     is the reference.",
     ]
+    # Built from what was actually placed. A hardcoded "skip this step" told
+    # every adopter who already had a CLAUDE.md to skip the one step their
+    # install needed, and the install then did nothing (s120).
+    surface_lines = []
+    for surface, fname, placed in (
+        ("Claude Code", "CLAUDE.md", claude_placed),
+        ("Cursor", "AGENTS.md", agents_placed),
+    ):
+        if placed:
+            surface_lines.append(f"     {surface}? Done — the placed {fname} points at them.")
+        else:
+            surface_lines.append(f"     {surface}? Not yet — your own {fname} was left untouched.")
+            surface_lines.append(f"     Add the block at allostatik/{fname}.allostatik-block to it,")
+            surface_lines.append("     or ask your AI to.")
     lines = [
         "",
         f"allostatik/ placed in {target}  ({claude_note}; {agents_note})",
         f"  {template_note}",
         "",
         "Next steps (the files take it from here):",
-        "  1. Point your project at the files. Claude Code or Cursor? Skip this",
-        "     step — the placed CLAUDE.md / AGENTS.md does it. Claude Desktop?",
-        "     This step is yours: create a project for this work (if one doesn't",
-        "     exist yet), then paste this block into its Project Instructions",
-        "     field. Other surfaces: the project-level instructions slot.",
+        "  1. Point your project at the files.",
+        *surface_lines,
+        "     Claude Desktop? This step is yours: create a project for this work",
+        "     (if one doesn't exist yet), then paste this block into its Project",
+        "     Instructions field. Other surfaces: the project-level instructions",
+        "     slot.",
         "",
         "     ----- copy from here -----",
         *pointer_block,

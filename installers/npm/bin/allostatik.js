@@ -211,32 +211,38 @@ async function main() {
   // CLAUDE.md: never overwrite an existing one — the managed block gets added
   // by hand (or by your AI, gated) per the template's own instructions.
   let claudeNote;
+  let claudePlaced;
   const targetClaudeMd = path.join(targetAbs, 'CLAUDE.md');
   if (fs.existsSync(targetClaudeMd)) {
     fs.copyFileSync(
       path.join(boilerplate, 'CLAUDE.md'),
       path.join(targetAllostatik, 'CLAUDE.md.allostatik-block')
     );
+    claudePlaced = false;
     claudeNote =
       'existing CLAUDE.md left untouched — the Allostatik block to add is at allostatik/CLAUDE.md.allostatik-block';
   } else {
     fs.copyFileSync(path.join(boilerplate, 'CLAUDE.md'), targetClaudeMd);
+    claudePlaced = true;
     claudeNote = 'CLAUDE.md placed (Claude Code manifest; harmless on other surfaces)';
   }
 
   // AGENTS.md: same rule — never overwrite. Cursor and other AGENTS.md-reading
   // surfaces load it from the project root.
   let agentsNote;
+  let agentsPlaced;
   const targetAgentsMd = path.join(targetAbs, 'AGENTS.md');
   if (fs.existsSync(targetAgentsMd)) {
     fs.copyFileSync(
       path.join(boilerplate, 'AGENTS.md'),
       path.join(targetAllostatik, 'AGENTS.md.allostatik-block')
     );
+    agentsPlaced = false;
     agentsNote =
       'existing AGENTS.md left untouched — the Allostatik block to add is at allostatik/AGENTS.md.allostatik-block';
   } else {
     fs.copyFileSync(path.join(boilerplate, 'AGENTS.md'), targetAgentsMd);
+    agentsPlaced = true;
     agentsNote = 'AGENTS.md placed (Cursor and other AGENTS.md surfaces; harmless elsewhere)';
   }
   if (tmpRoot) {
@@ -266,17 +272,33 @@ async function main() {
     "     aren't set up yet, help me set them up — github.com/allostatik/allostatik",
     '     is the reference.',
   ];
+  // Built from what was actually placed. A hardcoded "skip this step" told
+  // every adopter who already had a CLAUDE.md to skip the one step their
+  // install needed, and the install then did nothing (s120).
+  const surfaceLines = [
+    ['Claude Code', 'CLAUDE.md', claudePlaced],
+    ['Cursor', 'AGENTS.md', agentsPlaced],
+  ].flatMap(([surface, file, placed]) =>
+    placed
+      ? [`     ${surface}? Done — the placed ${file} points at them.`]
+      : [
+          `     ${surface}? Not yet — your own ${file} was left untouched.`,
+          `     Add the block at allostatik/${file}.allostatik-block to it,`,
+          '     or ask your AI to.',
+        ],
+  );
   const lines = [
     '',
     `allostatik/ placed in ${target}  (${claudeNote}; ${agentsNote})`,
     `  ${templateNote}`,
     '',
     'Next steps (the files take it from here):',
-    '  1. Point your project at the files. Claude Code or Cursor? Skip this',
-    '     step — the placed CLAUDE.md / AGENTS.md does it. Claude Desktop?',
-    "     This step is yours: create a project for this work (if one doesn't",
-    '     exist yet), then paste this block into its Project Instructions',
-    '     field. Other surfaces: the project-level instructions slot.',
+    '  1. Point your project at the files.',
+    ...surfaceLines,
+    '     Claude Desktop? This step is yours: create a project for this work',
+    "     (if one doesn't exist yet), then paste this block into its Project",
+    '     Instructions field. Other surfaces: the project-level instructions',
+    '     slot.',
     '',
     '     ----- copy from here -----',
     ...POINTER_BLOCK,

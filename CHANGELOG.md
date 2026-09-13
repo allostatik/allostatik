@@ -2,6 +2,26 @@
 
 What changed in each release, written for the person deciding whether to do it now. Every entry has the same parts: what's new, why it's worth it, what it costs, and how to upgrade — either the prompt to paste to your AI, or a pointer to the entry that carries it. The routine your AI follows — and the fine print on what an upgrade can and can't touch — is `UPGRADING.md`.
 
+## 0.3.10 — 2026-09-13 — What a release takes away
+
+**Tag:** `v0.3.10`
+
+**What's new**
+
+- Before your AI shows you a single change, it now has to tell you what the new version **removes** — quoted from your own current text, with where each removal sat, or the plain line *this release removes nothing*. It reads that off the files, not off the release notes. A test run of 0.3.8 printed four deleted lines on screen and then told the adopter nothing had been removed; this is the fix, one step earlier than a reviewer would catch it.
+- Your AI now says plainly that an upgrade session is only a **partial open** — no drift-check, no goal, no reading of the record — so a close run in that session can't claim more than it checked.
+- Your `plan.md` now tells you how to keep itself short: mark a finished block with `~~`, or a deferred one `[parked]` with its trigger, and the close moves the body out. 0.3.9 shipped the machinery for this; 0.3.10 ships the instruction.
+- The close asks you only *anything else to add?* Your AI answers its own four questions rather than handing you a quiz.
+- The handoff points at the debrief in your session log instead of copying it.
+
+**Why it's worth it.** The first item is the one that matters. Every earlier version let a release quietly drop a check, and left you approving a change list that never mentioned the loss. Now the loss is named before you decide, and the account has to match the bytes.
+
+**What it costs.** One more paragraph to read in the upgrade brief. Wording in the session routine and in `plan.md`'s housekeeping list. Nothing in your own files moves.
+
+**Already running an older version?** Your `plan.md` is your file, so an upgrade will not add the mark-it line to it. Add it by hand — the wording is in `RETIRING.md` — or ask your AI to.
+
+**To upgrade:** commit your project, then paste this to your AI: *Upgrade this project to Allostatik `v0.3.10` — run the upgrade routine under `allostatik/workflow.md` → Upgrade contract, target tag `v0.3.10`.*
+
 ## 0.3.9 — 2026-09-10 — Plain words, complete
 
 **Tag:** `v0.3.9`

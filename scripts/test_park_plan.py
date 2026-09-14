@@ -33,6 +33,8 @@ Third line, so the block is long enough to leave a stub.
 
 **Live paragraph.** Unmarked, stays.
 
+- **Live item naming a marker** — the hole `STEP-DONE` went through; stays.
+
 *Status s9:* newest, kept.
 
 ## Deferred thing [parked]
@@ -77,6 +79,8 @@ check("Parked from `plan.md` at s9" in k, "provenance line present")
 check("## Deferred thing [parked]" in p and "*Parked at s9 → `knowledge/docs/plan-parked.md`.*" in p, "stub in plan.md")
 check("Deferred text" not in p and "code with ##" not in p, "parked body gone from plan.md")
 check("Deferred text" not in l, "parked body did NOT go to log.md")
+check("Live item naming a marker" in p and "STEP-DONE" not in l,
+      "a head line that NAMES a close marker is not retired (s120: \\bDONE\\b matched inside STEP-DONE)")
 check("Its continuation line." in l and "Retired from plan.md at s9" in l, "struck item went to log.md")
 check("Live text that must not move." in p and "Also stays." in p and "*Status s9:* newest, kept." in p, "live content untouched")
 check("- **Deferred item; its claim and trigger live in this line. Trigger: X.** [parked]\n  *Parked at s9 → `knowledge/docs/plan-parked.md`.*" in p, "parked item: head line + indented pointer stay")

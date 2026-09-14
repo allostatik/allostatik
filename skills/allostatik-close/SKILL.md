@@ -68,5 +68,7 @@ happens, in the right order, without shortcuts.
 
 Every change has a durable home, deployed copies match canonical (or the gap
 is a blocking carry at the top of the handoff), the commit is pushed and
-confirmed if the project uses version control, and the next session can orient
+confirmed if the project uses version control — or, where the push cannot be
+run from here, `STEP-BLOCKED` is in the ledger, the user has the command, and
+the close says plainly that the remote is unconfirmed, and the next session can orient
 from the handoff plus the files alone — no memory of this conversation needed.

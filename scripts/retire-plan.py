@@ -70,7 +70,10 @@ for p in (PLAN, LOG):
 HEAD = re.compile(r"^(#{1,6})\s")
 ITEM = re.compile(r"^- ")
 STATUS = re.compile(r"^\*Status s(\d+)")
-MARK = re.compile(r"~~|^- \[x\]|\bDONE\b")
+# \b treats a hyphen as a boundary, so \bDONE\b fires inside STEP-DONE and
+# offers to retire live text that merely names the marker (s120). Require a
+# non-word, non-hyphen neighbour on both sides.
+MARK = re.compile(r"~~|^- \[x\]|(?<![\w-])DONE(?![\w-])")
 PARK = re.compile(r"\[parked\]")
 PARA = re.compile(r"^\*\*")           # a paragraph opening with a bold head (s117)
 STATUS_CAP = 150                        # words, newest Status block (s117)

@@ -453,15 +453,36 @@ m = re.search(r"^8\. \*\*Records carry positions.*?(?=\n9\. )", wf, re.S | re.M)
 if not m: print("could not locate contract rule 8"); sys.exit(1)
 rule8 = m.group(0)
 bad = []
-for tok in ("STEP-DONE upgrade", "OPENED", "CLOSED"):
-    if tok not in rule8:
-        bad.append("rule 8 does not name %r, which the drift-check or the routine relies on" % tok)
+# The STEP-DONE forms are DERIVED from the routine, never typed here (#260): a
+# typed 'STEP-DONE upgrade' is a claim about one routine standing in for the
+# class, and it broke the moment rule 8 was generalised past upgrades (s121).
+# Rule 8 may license a concrete form literally, or generically via <routine>.
+concrete = sorted(set(re.findall(r"`STEP-DONE ([a-z][a-z-]+)`", wf)))
+if not concrete:
+    bad.append("no concrete `STEP-DONE <name>` form found in the routine; this check would pass over nothing")
+# A verb is licensed only by a backticked FORM in rule 8 — verb, space,
+# placeholder — never by the word merely appearing in rule 8's prose. This
+# check had exactly that bug against STEP-BLOCKED, which rule 8 also mentions
+# in a rationale sentence; mutation found it, reading never would (#344).
+FORM = r"`([A-Z][A-Z-]*)\s+<[^`]*`"
+licensed = set(re.findall(FORM, rule8))
+written = set(re.findall(FORM, wf))
+if not written:
+    bad.append("no backticked ledger forms found in the routine; this check would pass over nothing")
+generic_done = "STEP-DONE" in licensed
+for form in concrete:
+    if ("STEP-DONE " + form) not in rule8 and not generic_done:
+        bad.append("the routine writes `STEP-DONE %s`; rule 8 licenses neither it nor a generic `STEP-DONE <routine>`" % form)
+# Set membership, not substring: REOPENED contains OPENED, so `in rule8` was
+# satisfied by the wrong line here too.
+for tok in ("OPENED", "CLOSED"):
+    if tok not in licensed:
+        bad.append("rule 8 licenses no %s form, which the drift-check or the routine relies on" % tok)
 # Derive the session-line verbs from the routine rather than typing them here: a
 # typed list is the same untested claim one layer down (#260). s120 added
 # REOPENED to the routine and this check passed, because its list was typed.
-for verb in sorted(set(re.findall(r"`([A-Z][A-Z-]*)\s+<[^`]*`", wf))):
-    if verb not in rule8:
-        bad.append("the routine writes ledger lines beginning %r; rule 8 does not name it" % verb)
+for verb in sorted(written - licensed):
+    bad.append("the routine writes ledger lines beginning %r; rule 8 does not license that form" % verb)
 # REOPENED contains OPENED, so any check that matches OPENED as a substring is
 # satisfied by the wrong line. The routine must say so where it reads OPENED.
 if "REOPENED" in wf:
@@ -608,6 +629,78 @@ sys.exit(1 if bad else 0)
 PY
 then ok "plan retirement: RETIRING.md ships, close step 2 points at it, test_park_plan.py passes"
 else bad "plan retirement is incoherent across RETIRING.md, close step 2 and scripts/"; fi
+
+# --- Case 21: a routine can say it could not check (0.3.12). Six properties, one
+#     seam: a step that cannot be verified must have somewhere to go that is not
+#     "done", and a check that compares nothing must not report a pass.
+say "case 21: a routine can say it could not check (0.3.12)"
+if python3 - "$ROOT" <<'PY'
+import sys, pathlib, re
+root = pathlib.Path(sys.argv[1])
+wf = (root / "templates/project-boilerplate/allostatik/workflow.md").read_text(encoding="utf-8")
+sk = (root / "skills/allostatik-close/SKILL.md").read_text(encoding="utf-8")
+bad = []
+
+def region(pat, label):
+    m = re.search(pat, wf, re.S | re.M)
+    if not m:
+        bad.append("could not locate %s; its assertions below cannot run" % label)
+        return ""
+    return m.group(0)
+
+open6  = region(r"^6\. \*\*Mark the session open in the ledger\.\*\*.*?(?=\n\n## )", "open step 6")
+open2  = region(r"^2\. \*\*Read the required context\.\*\*.*?(?=\n3\. )", "open step 2")
+close6 = region(r"^6\. \*\*Commit, push, confirm\*\*.*?(?=\n7\. )", "close step 6")
+mig6   = region(r"^6\. \*\*Fill the placeholders.*?(?=\n\n\*If the adopter)", "migrate step 6")
+drift1 = region(r"^1\. \*\*Canonical vs deployed\.\*\*.*?(?=\n2\. )", "drift-check step 1")
+fresh5 = region(r"^5\. \*\*Confirm it took.*?(?=\n\nAfter this)", "fresh step 5")
+hoff   = region(r"^## Writing the handoff.*?(?=\n## )", "the handoff section")
+
+# A1 — the blocked form is defined where the other progress forms are, and says
+#      what it means rather than just existing.
+if "STEP-BLOCKED <routine> <n>/<total> <reason>" not in open6:
+    bad.append("open step 6 does not define the STEP-BLOCKED form beside STEP and STEP-DONE")
+if "un-runnable" not in open6:
+    bad.append("open step 6 defines STEP-BLOCKED without tying it to the drift-check's un-runnable rule")
+
+# A3 — close step 6 is the case the form was invented for (#340). Before 0.3.12
+#      it was the one step with no escape clause at all, so an unrunnable push
+#      reappeared as work at the top of the next session, session after session.
+if "STEP-BLOCKED" not in close6:
+    bad.append("close step 6 still has no escape: a push that cannot be run has nowhere to go but the handoff")
+# and the skill must not disagree with the routine it points at (#338).
+if "STEP-BLOCKED" not in sk:
+    bad.append("the close skill does not carry close step 6's blocked case; skill and routine disagree")
+
+# B — migrate must import the placeholder fill, or Part 2 is never assigned and
+#     the drift-check compares nothing forever after.
+if "3–5" not in mig6:
+    bad.append("migrate step 6 does not import fresh steps 3-5; the placeholder fill is skipped on every migration")
+if "Drift-check surfaces" not in mig6:
+    bad.append("migrate step 6 does not name what an unfilled Part 2 costs the drift-check")
+
+# C — the run-time backstop for the same hole.
+if "empty" not in drift1.lower() or "un-runnable" not in drift1:
+    bad.append("drift-check step 1 does not treat an empty surfaces list as un-runnable rather than a pass")
+
+# D — the check must test the acceptance test, not the conditions around it.
+m = re.search(r"\*Check \(output\):\*.*?(?=\*If it fails:\*|$)", fresh5, re.S)
+if not m:
+    bad.append("fresh step 5 has no *Check (output):* to inspect")
+elif "fresh conversation" not in m.group(0):
+    bad.append("fresh step 5's check does not name its own acceptance test; the check passes without it being run")
+
+# F — a handoff is a set of pointers, so it must say which tree it points into.
+if "commit it was written against" not in hoff:
+    bad.append("the handoff section does not require the commit it was written against")
+if "commit it expects" not in open2:
+    bad.append("open step 2 does not check the handoff's expected commit before trusting the rest of it")
+
+for b in bad: print(b)
+sys.exit(1 if bad else 0)
+PY
+then ok "0.3.12 seam: blocked steps have a word, and checks that compare nothing say so"
+else bad "the 0.3.12 seam is incomplete"; fi
 
 say "passed: $PASS  failed: $FAIL"
 [ "$FAIL" -eq 0 ]

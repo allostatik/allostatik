@@ -2,6 +2,24 @@
 
 What changed in each release, written for the person deciding whether to do it now. Every entry has the same parts: what's new, why it's worth it, what it costs, and how to upgrade — either the prompt to paste to your AI, or a pointer to the entry that carries it. The routine your AI follows — and the fine print on what an upgrade can and can't touch — is `UPGRADING.md`.
 
+## 0.3.12 — 2026-09-14 — Nothing assumed
+
+**Tag:** `v0.3.12`
+
+**What's new**
+
+- When a step can't be checked — no credentials for the push, a capability your surface doesn't have — the routine now says so and hands you the command. Before, it had two options: write the step down as done, or quietly move it to the top of next session's handoff.
+- The close asks whether the session is actually over before it runs anything, and ends by saying plainly that it closed. If you have ever had to ask whether it ran, that missing line is why.
+- Keep working after a close and it says so, runs the whole close again, and rewrites the handoff. A handoff now comes out of a finished close and nowhere else.
+- Migrating a project that already has history now fills in your drift-check settings. Before, a migrated project's drift-check had nothing to compare, and passed every session without looking at anything.
+- Setup's last step now requires the fresh-conversation test to have been run rather than described. And your handoff names the commit it was written against, so the next session spots a stale one in seconds.
+
+**Why it's worth it.** These are one bug wearing five hats: a routine reporting on work it never verified. A close that never ran leaves no trace at all. A push that couldn't happen comes back as your problem next week. A migrated project whose drift-check compares nothing passes forever, looking healthy. None of it shows from the outside, which is exactly why it lasts — the only person who can catch it is you, and catching it is not your job.
+
+**What it costs.** Front-loaded and small, and a small release is its worst case. One upgrade run, which does change real text this time and walks you through it. After that, your close asks one more question before it starts and prints one more line when it ends. Nothing moved, and nothing in your own files needs editing.
+
+**To upgrade:** commit your project, then paste this to your AI: *Upgrade this project to Allostatik `v0.3.12` — run the upgrade routine under `allostatik/workflow.md` → Upgrade contract, target tag `v0.3.12`.*
+
 ## 0.3.11 — 2026-09-13 — What the installer skipped
 
 **Tag:** `v0.3.11`

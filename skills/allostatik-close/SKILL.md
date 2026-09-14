@@ -47,14 +47,22 @@ happens, in the right order, without shortcuts.
 
 1. Read `allostatik/workflow.md` **Session close**, **Writing the handoff**, and
    Part 2's *Closing-protocol additions* / *Handoff conventions*.
-2. Execute the close steps in the project's stated order, gating each write.
-3. Suggest a session name in close step 8's format — `s<N> <project>
+2. **Before any step runs, ask whether the session is ending** — close step 0's
+   second half. A session cannot observe that it is finished, and a request for a
+   handoff is not that answer. If it is not ending, run nothing and write no
+   handoff.
+3. Execute the close steps in the project's stated order, gating each write.
+4. Suggest a session name in close step 8's format — `s<N> <project>
    <description>`, description ~50 characters, leading with what distinguishes this
    session from its neighbours.
-4. **End the turn with one plain sentence saying the session is closed**, on its
+5. **End the turn with one plain sentence saying the session is closed**, on its
    own as the last line. It is the only signal the user has that the close ran;
    its absence is how a skipped close shows. If a step was deferred, say that
    instead and name what is owed.
+6. **If work resumes after that** — the commonest case being a change to the
+   handoff — say plainly that the session is no longer closed, append `REOPENED`,
+   and when the work is done run the whole close again. The handoff is rewritten
+   or updated at the end of it, never patched in place while the session is open.
 
 ## What good looks like
 

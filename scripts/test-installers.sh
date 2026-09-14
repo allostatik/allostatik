@@ -233,6 +233,15 @@ grep -q 'wrapped in backticks' "$BP/allostatik/workflow.md" \
 # output at all, so that sentence's absence is the only tell the user gets; the
 # routine and the close skill must both require it (Colby, s120 side note).
 say "case 10b: the close states that it closed"
+grep -q "is the session over, or is there more" "$WF" \
+  && ok "close step 0 asks whether the session is ending" \
+  || bad "close step 0 does not ask the one fact the routine cannot observe"
+grep -q "A handoff comes out of a completed close, and nowhere else" "$WF" \
+  && ok "the handoff section states the rule, not only the close's step order" \
+  || bad "Writing the handoff never says a close must have completed first"
+grep -q "run the whole close again" "$WF" \
+  && ok "close step 5 defines the reopen cycle" \
+  || bad "close step 5 does not say a reopen costs a full close"
 grep -q "say plainly that it is closed" "$WF" \
   && ok "close step 8 requires the closing statement" \
   || bad "close step 8 no longer requires the session to be declared closed"
@@ -447,6 +456,20 @@ bad = []
 for tok in ("STEP-DONE upgrade", "OPENED", "CLOSED"):
     if tok not in rule8:
         bad.append("rule 8 does not name %r, which the drift-check or the routine relies on" % tok)
+# Derive the session-line verbs from the routine rather than typing them here: a
+# typed list is the same untested claim one layer down (#260). s120 added
+# REOPENED to the routine and this check passed, because its list was typed.
+for verb in sorted(set(re.findall(r"`([A-Z][A-Z-]*)\s+<[^`]*`", wf))):
+    if verb not in rule8:
+        bad.append("the routine writes ledger lines beginning %r; rule 8 does not name it" % verb)
+# REOPENED contains OPENED, so any check that matches OPENED as a substring is
+# satisfied by the wrong line. The routine must say so where it reads OPENED.
+if "REOPENED" in wf:
+    m0 = re.search(r"^0\. \*\*Check both boundaries.*?(?=\n1\. \*\*)", wf, re.S | re.M)
+    if not m0:
+        bad.append("close step 0 not found; the OPENED/REOPENED disambiguation cannot be checked")
+    elif "start of a line" not in m0.group(0) or "REOPENED" not in m0.group(0):
+        bad.append("the routine writes REOPENED, but close step 0 does not say OPENED is matched at the start of a line and is a different word")
 spans = re.findall(r"`STEP upgrade [345]/5[^`]*`", up)
 if not spans: bad.append("no STEP upgrade 3/5-5/5 templates found in UPGRADING.md")
 words = set()

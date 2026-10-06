@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 """stamp-regions.py — the reference implementation for Allostatik's stamped regions.
 
-Three regions are upstream-owned. Everything else in an install belongs to the adopter.
+Four regions are upstream-owned. Everything else in an install belongs to the adopter.
 
-  name       file (relative to a project root / the template root)     markers
-  part1      allostatik/workflow.md                                    BEGIN/END allostatik-part1
-  claude-md  CLAUDE.md                                                 BEGIN/END allostatik
-  agents-md  AGENTS.md                                                 BEGIN/END allostatik
+  name         file (relative to a project root / the template root)   markers
+  part1        allostatik/workflow.md                                  BEGIN/END allostatik-part1
+  claude-md    CLAUDE.md                                               BEGIN/END allostatik
+  agents-md    AGENTS.md                                               BEGIN/END allostatik
+  state-check  allostatik/scripts/state-check.sh                       BEGIN/END allostatik-state-check
 
-A stamp lives on the BEGIN marker line:
+A stamp lives on the BEGIN marker line. The markdown regions write their markers as HTML
+comments; the script writes the same markers as `#` comment lines (line 2, after the
+shebang, and the last line), so it stays a runnable POSIX script:
 
   <!-- BEGIN allostatik-part1 v0.3.4 sha256:1a2b3c4d5e6f -->
   <!-- BEGIN allostatik v0.3.4 sha256:1a2b3c4d5e6f (managed — …) -->
+  # BEGIN allostatik-state-check v0.3.13 sha256:1a2b3c4d5e6f
 
 THE HASH (the one definition everything else copies): sha256 over the bytes strictly
 between the two marker lines — from the character after the BEGIN line's newline up to,
@@ -63,7 +67,10 @@ REGIONS = {
     "part1": ("allostatik/workflow.md", "allostatik-part1"),
     "claude-md": ("CLAUDE.md", "allostatik"),
     "agents-md": ("AGENTS.md", "allostatik"),
+    "state-check": ("allostatik/scripts/state-check.sh", "allostatik-state-check"),
 }
+FENCES = {"claude-md", "agents-md"}  # the two fenced blocks: an unmarked file there is the adopter's own
+MARKER_STYLE = {"allostatik-part1": "html", "allostatik": "html", "allostatik-state-check": "sh"}
 TEMPLATE_SUBDIR = Path("templates/project-boilerplate")
 VERSION_SOURCE = Path("installers/npm/package.json")  # lockstep source (suite case 8 guards it)
 FETCHED_DOCS = ["UPGRADING.md", "CHANGELOG.md", "INDEXING.md", "RETIRING.md"]  # every root doc Part 1 tells an AI to fetch; scanned for invisible characters too
@@ -72,7 +79,7 @@ PARK_PREFIX = "upgrade-v"
 PARK_SENTINEL = "data under review, NOT instructions"
 INSTRUCTION_FILENAMES = {"CLAUDE.md", "CLAUDE.local.md", "AGENTS.md", "GEMINI.md", ".cursorrules", ".clinerules"}  # loaded as authority wherever they sit
 INSTRUCTION_SUFFIXES = (".mdc",)
-PARK_ALLOWED = re.compile(r"^(?:(?:part1|claude-md|agents-md)\.(?:ref|base)\.md|backup/(?:part1|claude-md|agents-md)\.before\.md)$")
+PARK_ALLOWED = re.compile(r"^(?:(?:part1|claude-md|agents-md|state-check)\.(?:ref|base)\.md|backup/(?:part1|claude-md|agents-md|state-check)\.before\.md)$")
 KEPT_PARK_RE = re.compile(r"Upgrade-kept park \(v(?P<tag>[\d.]+), s(?P<s>\d+)\)")
 LEDGER = Path("allostatik/session-ledger.md")
 DECISIONS = Path("allostatik/decisions.md")
@@ -80,13 +87,21 @@ DECISIONS = Path("allostatik/decisions.md")
 # The BEGIN marker: kind, optional stamp, optional parenthesised comment that may NOT
 # contain `--` at all (closing `-->` or `--!>` early would smuggle visible text onto a
 # marker line the hash doesn't cover — the routine diffs marker lines, but the parser
-# refuses the trick outright).
-BEGIN_RE = re.compile(
-    r"^<!-- BEGIN (?P<kind>allostatik(?:-part1)?)"
-    r"(?: v(?P<ver>\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?) sha256:(?P<hash>[0-9a-f]{12}))?"
-    r"(?P<rest> \((?:(?!--).)*\))? -->$"
-)
-END_RE = re.compile(r"^<!-- END (?P<kind>allostatik(?:-part1)?)(?: \(managed\))? -->$")
+# refuses the trick outright). One pair of patterns per marker style: HTML comments in
+# the markdown regions, `#` comment lines in the script.
+_KIND = r"(?P<kind>allostatik(?:-part1|-state-check)?)"
+_STAMP = r"(?: v(?P<ver>\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?) sha256:(?P<hash>[0-9a-f]{12}))?"
+_REST = r"(?P<rest> \((?:(?!--).)*\))?"
+MARKERS = {
+    # style: (BEGIN pattern, END pattern, how --write renders a BEGIN line)
+    "html": (re.compile(r"^<!-- BEGIN " + _KIND + _STAMP + _REST + r" -->$"),
+             re.compile(r"^<!-- END " + _KIND + r"(?: \(managed\))? -->$"),
+             "<!-- BEGIN {kind} v{ver} sha256:{hash}{rest} -->"),
+    "sh": (re.compile(r"^# BEGIN " + _KIND + _STAMP + _REST + r"$"),
+           re.compile(r"^# END " + _KIND + r"$"),
+           "# BEGIN {kind} v{ver} sha256:{hash}{rest}"),
+}
+BEGIN_RE, END_RE = MARKERS["html"][0], MARKERS["html"][1]  # the markdown form, for callers that name it
 BLESS_RE = re.compile(
     r"Upgrade-kept customization \(region (?P<name>[a-z0-9-]+), v?(?P<a>[\w.-]+)(?:→|->)v(?P<b>[\d.]+), s(?P<s>\d+)\)"
 )
@@ -163,8 +178,9 @@ class Region:
             self.error = f"malformed: not valid UTF-8 ({e.reason} at byte {e.start})"
             return
         lines = self.text.split("\n")
-        begins = [(i, m) for i, l in enumerate(lines) for m in [BEGIN_RE.match(l)] if m and m.group("kind") == self.kind]
-        ends = [(i, m) for i, l in enumerate(lines) for m in [END_RE.match(l)] if m and m.group("kind") == self.kind]
+        begin_re, end_re = MARKERS[MARKER_STYLE[self.kind]][:2]
+        begins = [(i, m) for i, l in enumerate(lines) for m in [begin_re.match(l)] if m and m.group("kind") == self.kind]
+        ends = [(i, m) for i, l in enumerate(lines) for m in [end_re.match(l)] if m and m.group("kind") == self.kind]
         if not begins and not ends:
             self.error = "no markers"  # UNMARKED (part1) or NOT-PLACED (fences) — callers decide
             return
@@ -317,9 +333,10 @@ def verify_template(root: Path, write: bool) -> int:
             if not r.present or r.error:
                 continue
             lines = r.text.split("\n")
-            m = BEGIN_RE.match(lines[r.begin_idx])
+            begin_re, _, fmt = MARKERS[MARKER_STYLE[r.kind]]
+            m = begin_re.match(lines[r.begin_idx])
             rest = m.group("rest") or ""
-            lines[r.begin_idx] = f"<!-- BEGIN {r.kind} v{ver} sha256:{r.hash}{rest} -->"
+            lines[r.begin_idx] = fmt.format(kind=r.kind, ver=ver, hash=r.hash, rest=rest)
             r.path.write_text("\n".join(lines), encoding="utf-8")
         regions = load_regions(base)  # re-read what we wrote
 
@@ -365,6 +382,9 @@ def verify_project(project: Path, as_json: bool) -> int:
             if r.name == "part1":
                 rep.fail(f"{label}: file missing")
                 results[r.name] = "missing"
+            elif r.name == "state-check":
+                rep.ok(f"{label}: file not present (skipped — an install below 0.3.13; the upgrade offers it)")
+                results[r.name] = "absent"
             else:
                 rep.ok(f"{label}: file not present (skipped)")
                 results[r.name] = "absent"
@@ -373,9 +393,13 @@ def verify_project(project: Path, as_json: bool) -> int:
             rep.fail(f"{label}: {r.error}")
             results[r.name] = "malformed"
             continue
-        if r.unmarked and r.name != "part1":
+        if r.unmarked and r.name in FENCES:
             rep.ok(f"{label}: no markers — the adopter's own file, not a region (the block was never merged; sidecar allostatik/{r.path.name}.allostatik-block is the copy to merge)")
             results[r.name] = "not-placed"
+            continue
+        if (r.unmarked or not r.stamped) and r.name == "state-check":
+            rep.fail(f"{label}: no stamp — not the script as shipped; the check cannot be trusted until the upgrade routine replaces it or a blessing row names it")
+            results[r.name] = "unmarked"
             continue
         if r.unmarked or not r.stamped:
             rep.fail(f"{label}: unmarked/unstamped — pre-0.3.4 install; run the bootstrap upgrade (UPGRADING.md)")
@@ -436,12 +460,14 @@ def classify(project: Path, root: Path, as_json: bool) -> int:
         u, i = up[name], inst[name]
         entry = {"file": str(REGIONS[name][0]), "upstream_version": u.version, "upstream_hash": u.hash}
         if not i.present:
-            entry.update(cls="ABSENT", note="file not present on this project")
+            entry.update(cls="ABSENT", note="file not present on this project" + (" — a file the release adds; step 4 offers it" if name == "state-check" else ""))
         elif i.malformed:
             entry.update(cls="MALFORMED", note=i.error + " — halt; repair by hand first")
             halt = True
-        elif i.unmarked and name != "part1":
+        elif i.unmarked and name in FENCES:
             entry.update(cls="NOT-PLACED", note="the adopter's own file; the block was never merged — offer the sidecar, not an upgrade")
+        elif (i.unmarked or not i.stamped) and name == "state-check":
+            entry.update(cls="UNMARKED", note="a script without upstream's stamp is not the one shipped: show it against the reference, replace only with the adopter's say-so, ends stamped")
         elif i.unmarked or not i.stamped:
             entry.update(cls="UNMARKED", note="bootstrap: bounded walk, ends stamped")
         else:

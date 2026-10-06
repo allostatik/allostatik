@@ -261,7 +261,7 @@ else
 fi
 cls="$(python3 "$SR" --classify "$WORK/green-sh" --root "$ROOT" 2>&1 || true)"
 n_cur="$(printf '%s' "$cls" | grep -c ' CURRENT ' || true)"
-[ "$n_cur" -eq 3 ] && ok "fresh install classifies CURRENT on all 3 regions" || { bad "fresh install classification ($n_cur/3 CURRENT)"; printf '%s\n' "$cls"; }
+[ "$n_cur" -eq 4 ] && ok "fresh install classifies CURRENT on all 4 regions" || { bad "fresh install classification ($n_cur/4 CURRENT)"; printf '%s\n' "$cls"; }
 
 # --- Case 12: CHANGELOG lockstep — the head entry is the package version and names its tag
 # (the release ritual's step 3; without this the #288 shape returns: an expected step misfiled).
@@ -639,6 +639,7 @@ import sys, pathlib, re
 root = pathlib.Path(sys.argv[1])
 wf = (root / "templates/project-boilerplate/allostatik/workflow.md").read_text(encoding="utf-8")
 sk = (root / "skills/allostatik-close/SKILL.md").read_text(encoding="utf-8")
+sc = (root / "templates/project-boilerplate/allostatik/scripts/state-check.sh").read_text(encoding="utf-8")
 bad = []
 
 def region(pat, label):
@@ -692,35 +693,41 @@ elif "fresh conversation" not in m.group(0):
     bad.append("fresh step 5's check does not name its own acceptance test; the check passes without it being run")
 
 # G — the state rule (0.3.13): the open starts from a clean, declared state and the
-#     close owes the same state back. Every clause is something git prints.
+#     close owes the same state back. The step says what the check is for and runs the
+#     script; the reads live in the script, where their tests are (scripts/test-state-check.sh).
+#     Pinning the reads into the step's prose is how it reached 864 words (s128, #362).
 for needle, why in (("*Repositories* (Part 2)", "where the list lives"),
-                    ("git status --porcelain --untracked-files=normal --ignore-submodules=none", "the clean-tree read with git's hiding switched off"),
-                    ("refs/stash", "the stash read, by ref rather than reflog"),
-                    ("git worktree list", "the linked-worktree read"),
-                    ("git symbolic-ref -q HEAD", "the detached-HEAD read"),
-                    ("MERGE_HEAD|CHERRY_PICK_HEAD|REVERT_HEAD|BISECT_LOG|rebase-apply|rebase-merge|sequencer", "the half-done-operation read"),
-                    ("git ls-files -v", "the hide-bit count, printed not judged"),
-                    ("exit 128", "that blocked is decided by exit status, not message text"),
-                    ("git remote get-url --push --all", "that the remote read asks every place a push goes"),
-                    ("git worktree list --porcelain", "the worktree read that does not count a bare main repository"),
-                    ("trustctime|checkstat|fsmonitor", "the stat-trust settings, printed not judged"),
-                    ("full ref name", "that refs pair by full name"),
-                    ("includes the name", "that a second remote does not fail the storage read"),
-                    ("git ls-remote --heads --tags", "the remote read, against the remote itself"),
-                    ("as the same object", "that a ref must match by object, not by name"),
-                    ("local-only", "the local-only storage value"),
-                    ("`git remote`", "that the storage value is read against git"),
+                    ("sh allostatik/scripts/state-check.sh", "the script, by its placed path"),
+                    ("`OK`", "the verdict word for a clean repository"),
+                    ("`DIRTY`", "the verdict word for one with something to reconcile"),
+                    ("`BLOCKED`", "the verdict word for one it could not read"),
                     ("the session waits", "that dirt makes the session wait rather than ask"),
-                    ("Never `git add`, commit, stash or discard it yourself", "that the AI does not tidy"),
-                    ("STEP-BLOCKED open 3/7", "the blocked form for a read that cannot run here"),
-                    ("before the first write", "that access arriving mid-session runs the step then"),
-                    ("is not a read", "that the handoff's word is not evidence")):
+                    ("never you", "that the AI does not tidy"),
+                    ("STEP-BLOCKED open 3/7", "the blocked form for a read that cannot run here")):
     if needle not in open3:
         bad.append("open step 3 does not name %s" % why)
+if len(open3.split()) > 220:
+    bad.append("open step 3 is %d words; the reads belong in the script, not the step" % len(open3.split()))
+for needle, why in (("status --porcelain --untracked-files=normal --ignore-submodules=none", "the clean-tree read with git's hiding switched off"),
+                    ("refs/stash", "the stash read, by ref rather than reflog"),
+                    ("worktree list --porcelain", "the worktree read"),
+                    ("symbolic-ref -q HEAD", "the detached-HEAD read"),
+                    ("MERGE_HEAD CHERRY_PICK_HEAD REVERT_HEAD BISECT_LOG rebase-apply rebase-merge sequencer", "the half-done-operation read"),
+                    ("ls-files -v :/", "the hide-bit count, printed not judged"),
+                    ("-ge 128", "that blocked is decided by exit status, not message text"),
+                    ("get-url --push --all", "that the remote read asks every place a push goes"),
+                    ("bare", "the worktree read that does not count a bare main repository"),
+                    ("trustctime|checkstat|fsmonitor", "the stat-trust settings, printed not judged"),
+                    ("ls-remote --heads --tags", "the remote read, against the remote itself"),
+                    ("have[$2] != $1", "that a ref must match by object, paired by full name"),
+                    ("grep -qx -- \"$name\"", "that the storage name is matched whole, and a second remote does not fail it"),
+                    ("local-only", "the local-only storage value"),
+                    ("GIT_TERMINAL_PROMPT=0", "that a credential prompt cannot hang the open")):
+    if needle not in sc:
+        bad.append("state-check.sh does not carry %s" % why)
 for needle, why in (("started this session clean", "that the open's clean start is what makes the commit the session's"),
                     ("push every branch and tag", "that every branch and tag is pushed, not the current branch only"),
-                    ("as the same object", "that the close checks refs by object"),
-                    ("no stash ref", "that the close re-runs the stash read"),
+                    ("sh allostatik/scripts/state-check.sh", "that the close asks git the way the open did"),
                     ("exit 128", "that a blocked push is decided by exit status")):
     if needle not in close6:
         bad.append("close step 6 does not say %s" % why)
@@ -741,6 +748,35 @@ sys.exit(1 if bad else 0)
 PY
 then ok "0.3.12 seam: blocked steps have a word, and checks that compare nothing say so"
 else bad "the 0.3.12 seam is incomplete"; fi
+
+# --- Case 22: the clean-start check is a placed script and the fourth stamped region (0.3.13).
+# Every installer places it byte-identical to the template; its stamp verifies on an install;
+# an edit without a restamp is an unrecorded fork; an install without it classifies ABSENT for
+# step 4 to offer; the routine runs it by path; and its own suite (the readers' cases) passes.
+say ""
+say "case 22: state-check — a placed script, the fourth region (0.3.13)"
+SCS="allostatik/scripts/state-check.sh"
+for k in sh npm pip; do
+  cmp -s "$BP/$SCS" "$WORK/green-$k/$SCS" && ok "$k install places $SCS byte-identical to the template" || bad "$k install: $SCS missing or differs"
+done
+sh "$WORK/green-sh/$SCS" --help >/dev/null 2>&1 && ok "the placed script runs under sh (--help exits 0)" || bad "the placed script does not run under sh"
+python3 "$SR" --project "$WORK/green-sh" 2>/dev/null | grep -q 'state-check (allostatik/scripts/state-check.sh): body hashes to its stamp' && ok "--project verifies the script's stamp on a fresh install" || bad "--project does not verify the script's stamp"
+J="$WORK/inst-sc"; rm -rf "$J"; mkdir -p "$J"; cp -R "$BP/." "$J/"
+printf '\n# an edit\n' >> "$J/$SCS"   # before the END marker? no — after it: outside the body, so still as shipped
+python3 "$SR" --project "$J" >/dev/null 2>&1 && ok "text after the END marker is outside the body (no fork)" || bad "text after the END marker was read as part of the body"
+sed -i.bak 's/^any_dirty=0; any_blocked=0$/any_dirty=0; any_blocked=0; : edited/' "$J/$SCS" && rm -f "$J/$SCS.bak"
+python3 "$SR" --project "$J" >/dev/null 2>&1 && bad "an edited script without a restamp passed --project" || ok "an edited script without a restamp is an unrecorded fork"
+printf '%s' "$(python3 "$SR" --classify "$J" --root "$ROOT" 2>/dev/null || true)" | grep -q 'state-check CUSTOMIZED' && ok "--classify reports the edited script as CUSTOMIZED" || bad "--classify misreports the edited script"
+rm -f "$J/$SCS"
+python3 "$SR" --project "$J" >/dev/null 2>&1 && ok "an install without the script passes --project (below 0.3.13)" || bad "an install without the script fails --project"
+printf '%s' "$(python3 "$SR" --classify "$J" --root "$ROOT" 2>/dev/null || true)" | grep -q 'state-check ABSENT .*step 4 offers it' && ok "--classify: a missing script is ABSENT, for step 4 to offer" || bad "--classify misreports a missing script"
+grep -q 'state-check' "$ROOT/UPGRADING.md" && ok "UPGRADING.md names the state-check region" || bad "UPGRADING.md does not name the state-check region"
+grep -q 'sh allostatik/scripts/state-check.sh' "$BP/allostatik/workflow.md" && ok "Part 1 runs the script by its placed path" || bad "Part 1 does not run allostatik/scripts/state-check.sh"
+if out="$(sh "$ROOT/scripts/test-state-check.sh" 2>&1)" && printf '%s' "$out" | grep -q 'failed: 0$'; then
+  ok "the script's own suite passes ($(printf '%s' "$out" | sed -n 's/^passed: \([0-9]*\).*/\1/p') cases: the readers' breaks and the plain ones)"
+else
+  bad "the script's own suite fails:"; printf '%s\n' "$out" | grep '^  FAIL' || true
+fi
 
 say "passed: $PASS  failed: $FAIL"
 [ "$FAIL" -eq 0 ]

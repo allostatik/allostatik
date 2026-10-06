@@ -43,7 +43,7 @@ that protect the routine from shortcuts.
 2. Execute every Session open step exactly as the project's copy states it, in
    that file's order and numbering — the file is the list, this is not. At 0.3.13
    it runs: verify capability → read context (including the ledger's tail) →
-   start clean (every listed repository clean, unstashed and on its remote, or
+   start clean (run `allostatik/scripts/state-check.sh`; every line `OK`, or
    wait) → read the record and check its size against the budget → drift-check → state
    the goal in plain words and wait for approval → mark the session open in the
    ledger. Read the count off the file.

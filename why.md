@@ -16,6 +16,8 @@ Session rituals ensure the context persists throughout your project. Open, work,
 
 - **Freshness is checked, not assumed.** Context doesn't break; it goes stale. You refine a convention in the files, and an old paste keeps steering some surface. So a cheap drift-check runs at every session edge, canonical files against every deployed copy. It's TDD (test-driven design) pointed at process instead of code: every routine ships with the check that proves it ran.
 
+- **The routine explains itself, and is checked from outside.** Each step says what is true, what it is for, and what done looks like, and trusts the AI with the how — a better model needs less telling, and every case written down is text re-read at every open. Where the verdict must not be the AI's — is the tree clean, is this file as shipped — a script or a record answers, and the AI shows what it said. That's KISS (keep it simple) pointed at instructions, with the check kept out of the hands of the thing being checked.
+
 - **Context economy.** The window is a budget, not a bucket. Too much context is as costly as too little: a bloated window steers as badly as an empty one. Files load by manifest. Knowledge is pointed at, never pasted. That's DRY (don't repeat yourself). Each close distills the session to a few durable lines. Nothing persists on speculation. That's YAGNI (you aren't gonna need it), applied to memory.
 
 - **Surfaces are adapters.** Ports and adapters (hexagonal architecture) with your context as the core. The surface holds no logic; it just brings the files together. A new tool is one adapter, not a restart.

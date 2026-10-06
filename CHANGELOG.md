@@ -2,6 +2,24 @@
 
 What changed in each release, written for the person deciding whether to do it now. Every entry has the same parts: what's new, why it's worth it, what it costs, and how to upgrade — either the prompt to paste to your AI, or a pointer to the entry that carries it. The routine your AI follows — and the fine print on what an upgrade can and can't touch — is `UPGRADING.md`.
 
+## 0.3.13 — 2026-10-06 — Start clean
+
+**Tag:** `v0.3.13`
+
+**What's new**
+
+- Before a session writes anything, it now asks git about your project directly: no uncommitted changes, nothing stashed, no merge or rebase left half-done, every branch and tag pushed. If something is off, it tells you what and waits while you sort it out.
+- The end of a session owes the same back — everything committed and pushed — and that is confirmed by asking git, not by taking the AI's word for it.
+- List the other repositories your sessions write to, and say for each whether it is meant to have a remote. The check covers all of them, and tells you when one that should be backed up isn't.
+- If you said no to the record index, each session now shows the record's size in one line, and the offer comes back after it grows by a set amount, not only once it doubles.
+- The upgrade itself now starts from a clean project instead of working around uncommitted changes. And before each release, every document your AI may fetch from us is checked for hidden characters — all four, up from two.
+
+**Why it's worth it.** Every routine Allostatik runs trusts that the files on disk are the project. Until now that trust rested on the AI saying it had committed and pushed. Usually it had. When it hadn't, nothing showed: the next session built on work that lived on one disk, or nowhere. Git knows the answer, and now git is the one asked.
+
+**What it costs.** Front-loaded and small: one upgrade run, which adds a step to your session open and rewrites the close's commit-and-push step. After that, each open makes a few git reads, and now and then waits while you commit or push something you forgot. Two things to know. The open's steps after the second are now numbered one higher, so if your own notes refer to them by number, update those — nothing in your files was changed for you. And run one session per project folder at a time: two sessions started together in the same folder can both pass the check, and the first to finish would commit the other's work as its own. Running sessions side by side is what we are building next.
+
+**To upgrade:** commit and push your project, then paste this to your AI: *Upgrade this project to Allostatik `v0.3.13` — run the upgrade routine under `allostatik/workflow.md` → Upgrade contract, target tag `v0.3.13`.*
+
 ## 0.3.12 — 2026-09-14 — Nothing assumed
 
 **Tag:** `v0.3.12`

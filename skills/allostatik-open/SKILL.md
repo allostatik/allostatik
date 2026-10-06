@@ -41,9 +41,10 @@ that protect the routine from shortcuts.
    they point at (`project-instructions.md`, `plan.md`, and the rest of the
    canonical set).
 2. Execute every Session open step exactly as the project's copy states it, in
-   that file's order and numbering — the file is the list, this is not. At 0.3.7
+   that file's order and numbering — the file is the list, this is not. At 0.3.13
    it runs: verify capability → read context (including the ledger's tail) →
-   read the record and check its size against the budget → drift-check → state
+   start clean (every listed repository clean, unstashed and on its remote, or
+   wait) → read the record and check its size against the budget → drift-check → state
    the goal in plain words and wait for approval → mark the session open in the
    ledger. Read the count off the file.
    A `STEP` line in the ledger with no matching `STEP-DONE` means a long routine

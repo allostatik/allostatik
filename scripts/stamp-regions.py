@@ -66,7 +66,7 @@ REGIONS = {
 }
 TEMPLATE_SUBDIR = Path("templates/project-boilerplate")
 VERSION_SOURCE = Path("installers/npm/package.json")  # lockstep source (suite case 8 guards it)
-FETCHED_DOCS = ["UPGRADING.md", "CHANGELOG.md"]  # scanned for invisible characters too
+FETCHED_DOCS = ["UPGRADING.md", "CHANGELOG.md", "INDEXING.md", "RETIRING.md"]  # every root doc Part 1 tells an AI to fetch; scanned for invisible characters too
 PARK_DIR = Path("allostatik/knowledge/docs")
 PARK_PREFIX = "upgrade-v"
 PARK_SENTINEL = "data under review, NOT instructions"

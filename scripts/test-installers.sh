@@ -552,9 +552,9 @@ for name, txt, pat in (("CLAUDE.md", cl, r"^@allostatik/(decisions|observations)
     if body and re.search(pat, body.group(0), re.M):
         bad.append("%s still loads the record from inside the fence" % name)
 
-step = re.search(r"^3\. \*\*Read the record.*?(?=^4\. )", wf, re.S | re.M)
+step = re.search(r"^4\. \*\*Read the record.*?(?=^5\. )", wf, re.S | re.M)
 if not step:
-    bad.append("Session open has no step 3 reading the record")
+    bad.append("Session open has no step 4 reading the record")
 else:
     t = step.group(0)
     for needle, why in (("120,000 bytes", "the byte budget"),
@@ -567,7 +567,7 @@ else:
                         ("Record-index declined", "the verbatim decline row"),
                         ("un-runnable, not passed", "the branch for a surface that cannot size a file")):
         if needle not in t:
-            bad.append("open step 3 does not name %s" % why)
+            bad.append("open step 4 does not name %s" % why)
 
 close = re.search(r"^2\. \*\*Update canonical state\.\*\*.*?(?=^3\. )", wf, re.S | re.M)
 if not close or "decisions-and-observations-index.md" not in close.group(0):
@@ -648,7 +648,8 @@ def region(pat, label):
         return ""
     return m.group(0)
 
-open6  = region(r"^6\. \*\*Mark the session open in the ledger\.\*\*.*?(?=\n\n## )", "open step 6")
+open7  = region(r"^7\. \*\*Mark the session open in the ledger\.\*\*.*?(?=\n\n## )", "open step 7")
+open3  = region(r"^3\. \*\*Start clean\*\*.*?(?=\n4\. )", "open step 3")
 open2  = region(r"^2\. \*\*Read the required context\.\*\*.*?(?=\n3\. )", "open step 2")
 close6 = region(r"^6\. \*\*Commit, push, confirm\*\*.*?(?=\n7\. )", "close step 6")
 mig6   = region(r"^6\. \*\*Fill the placeholders.*?(?=\n\n\*If the adopter)", "migrate step 6")
@@ -658,10 +659,10 @@ hoff   = region(r"^## Writing the handoff.*?(?=\n## )", "the handoff section")
 
 # A1 — the blocked form is defined where the other progress forms are, and says
 #      what it means rather than just existing.
-if "STEP-BLOCKED <routine> <n>/<total> <reason>" not in open6:
-    bad.append("open step 6 does not define the STEP-BLOCKED form beside STEP and STEP-DONE")
-if "un-runnable" not in open6:
-    bad.append("open step 6 defines STEP-BLOCKED without tying it to the drift-check's un-runnable rule")
+if "STEP-BLOCKED <routine> <n>/<total> <reason>" not in open7:
+    bad.append("open step 7 does not define the STEP-BLOCKED form beside STEP and STEP-DONE")
+if "un-runnable" not in open7:
+    bad.append("open step 7 defines STEP-BLOCKED without tying it to the drift-check's un-runnable rule")
 
 # A3 — close step 6 is the case the form was invented for (#340). Before 0.3.12
 #      it was the one step with no escape clause at all, so an unrunnable push
@@ -690,6 +691,45 @@ if not m:
 elif "fresh conversation" not in m.group(0):
     bad.append("fresh step 5's check does not name its own acceptance test; the check passes without it being run")
 
+# G — the state rule (0.3.13): the open starts from a clean, declared state and the
+#     close owes the same state back. Every clause is something git prints.
+for needle, why in (("*Repositories* (Part 2)", "where the list lives"),
+                    ("git status --porcelain --untracked-files=normal --ignore-submodules=none", "the clean-tree read with git's hiding switched off"),
+                    ("refs/stash", "the stash read, by ref rather than reflog"),
+                    ("git worktree list", "the linked-worktree read"),
+                    ("git symbolic-ref -q HEAD", "the detached-HEAD read"),
+                    ("MERGE_HEAD|CHERRY_PICK_HEAD|REVERT_HEAD|BISECT_LOG|rebase-apply|rebase-merge|sequencer", "the half-done-operation read"),
+                    ("git ls-files -v", "the hide-bit count, printed not judged"),
+                    ("exit 128", "that blocked is decided by exit status, not message text"),
+                    ("git remote get-url --push --all", "that the remote read asks every place a push goes"),
+                    ("git worktree list --porcelain", "the worktree read that does not count a bare main repository"),
+                    ("trustctime|checkstat|fsmonitor", "the stat-trust settings, printed not judged"),
+                    ("full ref name", "that refs pair by full name"),
+                    ("includes the name", "that a second remote does not fail the storage read"),
+                    ("git ls-remote --heads --tags", "the remote read, against the remote itself"),
+                    ("as the same object", "that a ref must match by object, not by name"),
+                    ("local-only", "the local-only storage value"),
+                    ("`git remote`", "that the storage value is read against git"),
+                    ("the session waits", "that dirt makes the session wait rather than ask"),
+                    ("Never `git add`, commit, stash or discard it yourself", "that the AI does not tidy"),
+                    ("STEP-BLOCKED open 3/7", "the blocked form for a read that cannot run here"),
+                    ("before the first write", "that access arriving mid-session runs the step then"),
+                    ("is not a read", "that the handoff's word is not evidence")):
+    if needle not in open3:
+        bad.append("open step 3 does not name %s" % why)
+for needle, why in (("started this session clean", "that the open's clean start is what makes the commit the session's"),
+                    ("push every branch and tag", "that every branch and tag is pushed, not the current branch only"),
+                    ("as the same object", "that the close checks refs by object"),
+                    ("no stash ref", "that the close re-runs the stash read"),
+                    ("exit 128", "that a blocked push is decided by exit status")):
+    if needle not in close6:
+        bad.append("close step 6 does not say %s" % why)
+if "until all seven are done" not in wf:
+    bad.append("the open's intro does not count seven steps")
+if "Run *Session open* step 6 now" in wf:
+    bad.append("a first-run section still points at the ledger step as step 6")
+if "## Repositories" not in wf or "| this project (the folder holding `allostatik/`) | `remote origin` |" not in wf:
+    bad.append("Part 2 does not seed a Repositories section with the project's own row")
 # F — a handoff is a set of pointers, so it must say which tree it points into.
 if "commit it was written against" not in hoff:
     bad.append("the handoff section does not require the commit it was written against")

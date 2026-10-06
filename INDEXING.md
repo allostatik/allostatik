@@ -36,7 +36,7 @@ Two checks are worth watching it do, because a wrong index is worse than none:
 
 ## Saying no
 
-Perfectly reasonable — you may know your record is about to get shorter, or you may want to keep reading the whole thing. Your AI records the decision in `decisions.md` and stops asking. It offers again if the record doubles.
+Perfectly reasonable — you may know your record is about to get shorter, or you may want to keep reading the whole thing. Your AI records the decision in `decisions.md` and stops halting to ask. Each session still opens with one line — the record's size against the budget — so you can watch it grow. It offers again once the record has grown by another 60,000 bytes, half the budget.
 
 ## Going back
 

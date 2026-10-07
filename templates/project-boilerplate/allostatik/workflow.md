@@ -1,4 +1,4 @@
-<!-- BEGIN allostatik-part1 v0.3.13 sha256:1b74956f9d9a -->
+<!-- BEGIN allostatik-part1 v0.3.14 sha256:1b74956f9d9a -->
 # Workflow
 
 This file holds the routines Claude runs at the start and end of every session in this project, plus the project-specific pieces those routines need. It's the operational half of your project config — identity, purpose, and domain context live in `project-instructions.md`; this file is procedure.

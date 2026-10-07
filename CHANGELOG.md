@@ -2,9 +2,9 @@
 
 What changed in each release, written for the person deciding whether to do it now. Every entry has the same parts: what's new, why it's worth it, what it costs, and how to upgrade — either the prompt to paste to your AI, or a pointer to the entry that carries it. The routine your AI follows — and the fine print on what an upgrade can and can't touch — is `UPGRADING.md`.
 
-## 0.3.13 — 2026-10-06 — Start clean
+## 0.3.14 — 2026-10-07 — Start clean
 
-**Tag:** `v0.3.13`
+**Tag:** `v0.3.14`
 
 **What's new**
 
@@ -20,7 +20,11 @@ What changed in each release, written for the person deciding whether to do it n
 
 **What it costs.** Front-loaded and small: one upgrade run, which adds a step to your session open, rewrites the close's commit-and-push step, and places one file. After that, each open runs the script — a few git reads, and now and then a wait while you commit or push something you forgot. Two things to know. The open's steps after the second are now numbered one higher, so if your own notes refer to them by number, update those — nothing in your files was changed for you. And run one session per project folder at a time: two sessions started together in the same folder can both pass the check, and the first to finish would commit the other's work as its own. Running sessions side by side is what we are building next.
 
-**To upgrade:** commit and push your project, then paste this to your AI: *Upgrade this project to Allostatik `v0.3.13` — run the upgrade routine under `allostatik/workflow.md` → Upgrade contract, target tag `v0.3.13`.*
+**To upgrade:** commit and push your project, then paste this to your AI: *Upgrade this project to Allostatik `v0.3.14` — run the upgrade routine under `allostatik/workflow.md` → Upgrade contract, target tag `v0.3.14`.*
+
+## 0.3.13 — 2026-10-06 — tagged, never published
+
+**Tag:** `v0.3.13`. Its first run — the upgrade of the tool's own project — found three comment lines in the new script written with angle-bracket tokens, the shape the open's placeholder scan looks for. Fixed as 0.3.14, which carries everything this release held; no package was published under 0.3.13.
 
 ## 0.3.12 — 2026-09-14 — Nothing assumed
 

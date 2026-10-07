@@ -1,5 +1,5 @@
 #!/bin/sh
-# BEGIN allostatik-state-check v0.3.13 sha256:4118106dd8e1
+# BEGIN allostatik-state-check v0.3.14 sha256:07a3399d5819
 # state-check.sh — ask git whether every repository this project lists is as a session
 # should find it. Part 1's open (Start clean) and close (commit, push, confirm) run it, and
 # so does the upgrade routine before it writes anything. It reads; it never writes.
@@ -49,7 +49,7 @@ wf=$root/allostatik/workflow.md
 tmp=$(mktemp -d) || exit 2
 trap 'rm -rf "$tmp"' EXIT INT TERM HUP
 
-# ---- the rows of "## Repositories": "<path as stated>|<storage>" per line
+# ---- the rows of "## Repositories": one line per row — the path as stated, a bar, the storage value
 if [ -f "$wf" ]; then
   awk -F'|' '
     /^## Repositories/ { s = 1; next }
@@ -70,7 +70,7 @@ if [ -n "${ALLOSTATIK_PATH_MAP:-}" ]; then
   case $map_from in "~"|"~/"*) map_from=$HOME${map_from#"~"} ;; esac
 fi
 
-# ---- resolve each row to a directory: "<dir>|<storage>|<path as stated>"
+# ---- resolve each row to a directory: directory, bar, storage value, bar, path as stated
 seen_root=0
 : > "$tmp/plan"
 while IFS='|' read -r stated storage; do
@@ -97,7 +97,7 @@ g() {  # git in $repo: stdout to $tmp/out, first stderr line to $err, status to 
   git -C "$repo" "$@" >"$tmp/out" 2>"$tmp/err" </dev/null; rc=$?
   err=$(head -n 1 "$tmp/err")
 }
-run() {  # run <label> <git args...> — 0 if git ran the read (rule 1), 1 if BLOCKED
+run() {  # run LABEL GIT-ARGS... — 0 if git ran the read (rule 1), 1 if BLOCKED
   label=$1; shift
   g "$@"
   if [ "$rc" -ge 128 ]; then blocked="${blocked:+$blocked; }$label: exit $rc${err:+ ($err)}"; return 1; fi
